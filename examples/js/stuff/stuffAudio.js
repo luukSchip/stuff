@@ -3,18 +3,18 @@ var stuffAudio = (function(){
 	return function(filenames){
 		var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		var analysers = new Array();
-		var dataArrays = new Array();
+		//var dataArrays = new Array();
+		var sources = new Array();
 		var loadBuffers = function(audioData){
 			console.log(audioData);
-			var sources = new Array();
 			for(var i = 0; i < audioData.length; i++){
 				(function(audioData, i){
 					var source = audioCtx.createBufferSource();
 					var analyser = audioCtx.createAnalyser();
 					analyser.fftSize = 2048;
 					var bufferLength = analyser.frequencyBinCount;
-					var dataArray = new Uint8Array(bufferLength);
-					dataArrays.push(dataArray);
+					//var dataArray = new Uint8Array(bufferLength);
+					//dataArrays.push(dataArray);
 
 					audioCtx.decodeAudioData(audioData[i],function(buffer){
 			        		source.buffer = buffer;
@@ -39,8 +39,8 @@ var stuffAudio = (function(){
 			}
 		};
 		return {
+			sources: sources,
 			analysers: analysers,
-			dataArrays: dataArrays,
 			init: function(){
 				var audioData = new Array();
 				for(var i = 0; i < filenames.length; i++){

@@ -7,6 +7,7 @@ var particleLight;
 var stuffHeads = new Array();
 var audio;
 var gui;
+var audioLevels = [0.0,0.0,0.0];
 
 window.onload = function() {
 	gui = new dat.GUI();
@@ -30,13 +31,12 @@ function initHeads(){
 	for(var i = 0; i < 3; i++){
 		(function(i){
 			stuffHeads.push(stuffHead(THREE).create(function(head){
-				startTweens(head);
+				startTweens(i);
 				scene.add(head.scene);
 				head.attributes.posX = -175 + i * 175;
 				head.mesh.position.x = head.attributes.posX;
 				var folder = gui.addFolder("head " + i);
 				folder.add(head.attributes, 'randomFaceFactor', 0.0, 50.0);
-				folder.add(head.attributes, 'audioThreshold', 0.0, 1.0);
 				folder.add(head.attributes, 'tweenSpeed', 1, 1000);
 				folder.add(head.attributes, 'posX', -500, 500)
 					.onChange(function(value){
@@ -109,22 +109,25 @@ function onWindowResize() {
 
 }
 
-function startTweens(head){
+function startTweens(headIndex){
+	var head = stuffHeads[headIndex];
 	var faceVertices = head.faceVertices;
 	var originalFaceVertices = head.originalFaceVertices;
 	for(var i = 0; i < faceVertices.length; i++){
 		var faceVertex = faceVertices[i];
 		var originalFaceVertex = originalFaceVertices[i];
-		tweenVertex(faceVertex, originalFaceVertex, head.mesh.geometry, head.attributes);
+		tweenVertex(headIndex, faceVertex, originalFaceVertex);
 	}
 }
 
-function tweenVertex(faceVertex, originalFaceVertex,faceGeometry, attributes){
+function tweenVertex(headIndex, faceVertex, originalFaceVertex){
+	var faceGeometry = stuffHeads[headIndex].mesh.geometry;
+	var attributes = stuffHeads[headIndex].attributes;
 	if(attributes.scramble){
 		new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y})
 		.to({
-				x:originalFaceVertex.x + (Math.random() - 0.5) * attributes.randomFaceFactor,
-				y:originalFaceVertex.y + (Math.random() - 0.5) * attributes.randomFaceFactor
+				x:originalFaceVertex.x + (Math.random() - 0.5) * attributes.randomFaceFactor * parseFloat(audioLevels[headIndex] / 100.0),
+				y:originalFaceVertex.y + (Math.random() - 0.5) * attributes.randomFaceFactor * parseFloat(audioLevels[headIndex] / 100.0)
 			},Math.random() * attributes.tweenSpeed)
 		.onUpdate(function(){
 			faceVertex.x = this.x;
@@ -134,7 +137,7 @@ function tweenVertex(faceVertex, originalFaceVertex,faceGeometry, attributes){
 			faceGeometry.normalsNeedUpdate = true;
 		})
 		.onComplete(function(){
-			tweenVertex(faceVertex, originalFaceVertex,faceGeometry, attributes);
+			tweenVertex(headIndex, faceVertex, originalFaceVertex);
 		})
 		.start();
 	}
@@ -153,21 +156,17 @@ function animate() {
 }
 
 function analyzeAudio(){
-	var minLevel = 59.0;
-	var maxLevel = 210.0;
 	for(var i = 0; i < audio.analysers.length; i++){
+		//var buffer = audio.sources[i].buffer;
 		var analyser = audio.analysers[i];
-		var dataArrays = audio.dataArrays;
-		analyser.getByteTimeDomainData(audio.dataArrays[i]);
-		var audioLevel = 
-			parseFloat(dataArrays[i][dataArrays[i].length - 1]
-			- minLevel) / parseFloat(maxLevel - minLevel);
-		if(audioLevel > stuffHeads[i].attributes.audioThreshold){	
-			stuffHeads[i].attributes.scramble = true;
-			startTweens(stuffHeads[i]);
-		}else{	
-			stuffHeads[i].attributes.scramble = false;
+		var dataArray = new Uint8Array(analyser.frequencyBinCount);
+		analyser.getByteFrequencyData(dataArray);
+		var average = 0;
+		for(var j=0; j<dataArray.length; j++) {
+		    average += parseFloat(dataArray[j]);
 		}
+		average = average/dataArray.length;
+		audioLevels[i] = average;
 	}
 }
 

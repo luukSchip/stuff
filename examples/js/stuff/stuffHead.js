@@ -8,12 +8,11 @@ var stuffHead = (function(){
 		return {
 			attributes: {
 				randomFaceFactor: 25.0,
-				scramble: false,
+				scramble: true,
 				tweenSpeed: 25,
 				posX: 0,
 				posY: 0,
 				posZ: 0,
-				audioThreshold: 139
 			},
 			mesh: undefined,
 			scene: undefined,
