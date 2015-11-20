@@ -7,12 +7,13 @@ var stuffHead = (function(){
 		var faceGeometry;
 		return {
 			attributes: {
-				randomFaceFactor: 3.0,
-				scramble: true,
-				tweenSpeed: 500,
+				randomFaceFactor: 25.0,
+				scramble: false,
+				tweenSpeed: 25,
 				posX: 0,
 				posY: 0,
 				posZ: 0,
+				audioThreshold: 139
 			},
 			mesh: undefined,
 			scene: undefined,

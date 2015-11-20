@@ -4,62 +4,61 @@ var container, stats;
 
 var camera, scene, renderer, objects;
 var particleLight;
-
-// var attributes = new function() {
-// 	this.randomFaceFactor = 3.0;
-// 	this.scramble = false;
-// 	this.tweenSpeed = 500;
-// };
 var stuffHeads = new Array();
+var audio;
 var gui;
-
-
 
 window.onload = function() {
 	gui = new dat.GUI();
-	// gui.add(attributes, 'randomFaceFactor', 0.0, 50.0);
-	// gui.add(attributes, 'scramble');
-	// gui.add(attributes, 'tweenSpeed', 1, 1000);
 };
 
 init();
 
-
-for(var i = 0; i < 3; i++){
-	(function(i){
-		stuffHeads.push(stuffHead(THREE).create(function(head){
-			startTweens(head);
-			scene.add(head.scene);
-			head.attributes.posX = -175 + i * 175;
-			head.mesh.position.x = head.attributes.posX;
-			var folder = gui.addFolder("head " + i);
-			folder.add(head.attributes, 'randomFaceFactor', 0.0, 50.0);
-			folder.add(head.attributes, 'scramble')
-				.onChange(function(scrable){
-					if(scrable){
-						startTweens(head);
-					}
-				});
-			folder.add(head.attributes, 'tweenSpeed', 1, 1000);
-			folder.add(head.attributes, 'posX', -500, 500)
-				.onChange(function(value){
-					head.mesh.position.x = value;
-				});
-			folder.add(head.attributes, 'posY', -500, 500)
-				.onChange(function(value){
-					head.mesh.position.y = value;
-				});;
-			folder.add(head.attributes, 'posZ', -500, 500)
-				.onChange(function(value){
-					head.mesh.position.z = value;
-				});;
-
-			//head.mesh.translateX(i*200);
-		}));
-	}(i))
-}
 function init() {
+	initHeads();
+	initAudio(["vocals.mp3","gitaren.mp3","drums.mp3"]);
+	initScene();
+	animate();
 
+}
+
+function initAudio(filenames){
+	audio = stuffAudio(filenames).init();
+};
+
+function initHeads(){
+	for(var i = 0; i < 3; i++){
+		(function(i){
+			stuffHeads.push(stuffHead(THREE).create(function(head){
+				startTweens(head);
+				scene.add(head.scene);
+				head.attributes.posX = -175 + i * 175;
+				head.mesh.position.x = head.attributes.posX;
+				var folder = gui.addFolder("head " + i);
+				folder.add(head.attributes, 'randomFaceFactor', 0.0, 50.0);
+				folder.add(head.attributes, 'audioThreshold', 0, 255);
+				folder.add(head.attributes, 'tweenSpeed', 1, 1000);
+				folder.add(head.attributes, 'posX', -500, 500)
+					.onChange(function(value){
+						head.mesh.position.x = value;
+					});
+				folder.add(head.attributes, 'posY', -500, 500)
+					.onChange(function(value){
+						head.mesh.position.y = value;
+					});;
+				folder.add(head.attributes, 'posZ', -500, 500)
+					.onChange(function(value){
+						head.mesh.position.z = value;
+					});;
+
+				//head.mesh.translateX(i*200);
+			}));
+		}(i))
+	}
+}
+
+
+function initScene(){
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
 
@@ -73,20 +72,20 @@ function init() {
 
 	// Lights
 
-	scene.add( new THREE.AmbientLight( 0xcccccc ) );
+	//scene.add( new THREE.AmbientLight( 0x440000 ) );
 
-	var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee );
-	directionalLight.position.x = (Math.random() - 0.5) + 100;
-	directionalLight.position.y = (Math.random() - 0.5) + 100;
-	directionalLight.position.z = (Math.random() - 0.5) + 100;
-	directionalLight.position.normalize();
+	var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0x9999ff );
+	directionalLight.position.x = 100;
+	directionalLight.position.y = 100;
+	directionalLight.position.z = 30;
+	//directionalLight.position.normalize();
 	scene.add( directionalLight );
 
-	var pointLight = new THREE.PointLight( 0xffffff, 4 );
+	var pointLight = new THREE.PointLight( 0x441922, 4 );
 	particleLight.add( pointLight );
-	particleLight.position.x = 10000;
-	particleLight.position.y = 10000;
-	particleLight.position.z = 10000;
+	particleLight.position.x = -100;
+	particleLight.position.y = 100;
+	particleLight.position.z = 0;
 
 	renderer = new THREE.WebGLRenderer({antialiasing: true });
 	renderer.setPixelRatio( window.devicePixelRatio );
@@ -98,12 +97,8 @@ function init() {
 	stats.domElement.style.top = '0px';
 	container.appendChild( stats.domElement );
 
-	//
-
 	window.addEventListener( 'resize', onWindowResize, false );
-	animate();
-
-}
+};
 
 function onWindowResize() {
 
@@ -154,7 +149,21 @@ function animate() {
 	TWEEN.update();
 	render();
 	stats.update();
+	analyzeAudio();
+}
 
+function analyzeAudio(){
+	for(var i = 0; i < audio.analysers.length; i++){
+		var analyser = audio.analysers[i];
+		var dataArrays = audio.dataArrays;
+		analyser.getByteTimeDomainData(audio.dataArrays[i]);
+		if(dataArrays[i][dataArrays[i].length - 1] > stuffHeads[i].attributes.audioThreshold){	
+			stuffHeads[i].attributes.scramble = true;
+			startTweens(stuffHeads[i]);
+		}else{	
+			stuffHeads[i].attributes.scramble = false;
+		}
+	}
 }
 
 var clock = new THREE.Clock();
