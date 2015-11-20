@@ -10,9 +10,9 @@ var gui;
 
 window.onload = function() {
 	gui = new dat.GUI();
+	init();
 };
 
-init();
 
 function init() {
 	initHeads();
@@ -36,7 +36,7 @@ function initHeads(){
 				head.mesh.position.x = head.attributes.posX;
 				var folder = gui.addFolder("head " + i);
 				folder.add(head.attributes, 'randomFaceFactor', 0.0, 50.0);
-				folder.add(head.attributes, 'audioThreshold', 0, 255);
+				folder.add(head.attributes, 'audioThreshold', 0.0, 1.0);
 				folder.add(head.attributes, 'tweenSpeed', 1, 1000);
 				folder.add(head.attributes, 'posX', -500, 500)
 					.onChange(function(value){
@@ -153,11 +153,16 @@ function animate() {
 }
 
 function analyzeAudio(){
+	var minLevel = 59.0;
+	var maxLevel = 210.0;
 	for(var i = 0; i < audio.analysers.length; i++){
 		var analyser = audio.analysers[i];
 		var dataArrays = audio.dataArrays;
 		analyser.getByteTimeDomainData(audio.dataArrays[i]);
-		if(dataArrays[i][dataArrays[i].length - 1] > stuffHeads[i].attributes.audioThreshold){	
+		var audioLevel = 
+			parseFloat(dataArrays[i][dataArrays[i].length - 1]
+			- minLevel) / parseFloat(maxLevel - minLevel);
+		if(audioLevel > stuffHeads[i].attributes.audioThreshold){	
 			stuffHeads[i].attributes.scramble = true;
 			startTweens(stuffHeads[i]);
 		}else{	
