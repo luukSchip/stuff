@@ -17,7 +17,7 @@ window.onload = function() {
 
 function init() {
 	initHeads();
-	initAudio(["vocals.mp3","gitaren.mp3","drums.mp3"]);
+	initAudio(["on.mp3"]);
 	initScene();
 	animate();
 
@@ -156,17 +156,31 @@ function animate() {
 }
 
 function analyzeAudio(){
-	for(var i = 0; i < audio.analysers.length; i++){
-		//var buffer = audio.sources[i].buffer;
-		var analyser = audio.analysers[i];
-		var dataArray = new Uint8Array(analyser.frequencyBinCount);
-		analyser.getByteFrequencyData(dataArray);
-		var average = 0;
-		for(var j=0; j<dataArray.length; j++) {
-		    average += parseFloat(dataArray[j]);
+	// for(var i = 0; i < audio.analysers.length; i++){
+	// 	//var buffer = audio.sources[i].buffer;
+	// 	var analyser = audio.analysers[i];
+	// 	var dataArray = new Uint8Array(analyser.frequencyBinCount);
+	// 	analyser.getByteFrequencyData(dataArray);
+	// 	var average = 0;
+	// 	for(var j=0; j<dataArray.length; j++) {
+	// 	    average += parseFloat(dataArray[j]);
+	// 	}
+	// 	average = average/dataArray.length;
+	// 	audioLevels[i] = average;
+	// }
+	for(var i = 0; i < stuffHeads.length; i++){
+		if(audio.analysers.length > 0){
+			var analyser = audio.analysers[0];
+			var dataArray = new Uint8Array(analyser.frequencyBinCount);
+			analyser.getByteFrequencyData(dataArray);
+			var average = 0;
+			for(var j=i*(dataArray.length / stuffHeads.length); j<(i+1)*(dataArray.length / stuffHeads.length); j++) {
+			    average += parseFloat(dataArray[j]);
+			    console.log
+			}
+			average = average/dataArray.length;
+			audioLevels[i] = average;
 		}
-		average = average/dataArray.length;
-		audioLevels[i] = average;
 	}
 }
 
