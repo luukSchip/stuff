@@ -13,6 +13,8 @@ var stuffHead = (function(){
 				posX: 0,
 				posY: 0,
 				posZ: 0,
+				lowCut: 0,
+				highCut: 1024
 			},
 			mesh: undefined,
 			scene: undefined,

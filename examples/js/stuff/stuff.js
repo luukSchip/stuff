@@ -1,14 +1,14 @@
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
+var verbose = false;
 var container, stats;
-
 var camera, scene, renderer, objects;
 var particleLight;
 var stuffHeads = new Array();
 var audio;
 var gui;
 var audioLevels = [0.0,0.0,0.0];
-
+var preset = JSON.parse('[{"randomFaceFactor":12.13165269504664,"scramble":true,"tweenSpeed":243.39042084703186,"posX":-175,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"randomFaceFactor":24.814744148959036,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":0,"posZ":0,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"randomFaceFactor":40.02818886539817,"scramble":true,"tweenSpeed":1,"posX":175,"posY":0,"posZ":0,"lowCut":598.5536864232465,"highCut":1024}]');
 window.onload = function() {
 	gui = new dat.GUI();
 	init();
@@ -17,7 +17,7 @@ window.onload = function() {
 
 function init() {
 	initHeads();
-	initAudio(["on.mp3"]);
+	initAudio(["eventHorizon.mp3"]);
 	initScene();
 	animate();
 
@@ -33,6 +33,9 @@ function initHeads(){
 			stuffHeads.push(stuffHead(THREE).create(function(head){
 				startTweens(i);
 				scene.add(head.scene);
+				//var preset = JSON.parse(preset);
+				//console.log(preset);
+				head.attributes = preset[i];
 				head.attributes.posX = -175 + i * 175;
 				head.mesh.position.x = head.attributes.posX;
 				var folder = gui.addFolder("head " + i);
@@ -45,11 +48,14 @@ function initHeads(){
 				folder.add(head.attributes, 'posY', -500, 500)
 					.onChange(function(value){
 						head.mesh.position.y = value;
-					});;
+					});
 				folder.add(head.attributes, 'posZ', -500, 500)
 					.onChange(function(value){
 						head.mesh.position.z = value;
-					});;
+					});
+				folder.add(head.attributes, 'lowCut', 0, 1024);
+				folder.add(head.attributes, 'highCut', 0, 1024);
+
 
 				//head.mesh.translateX(i*200);
 			}));
@@ -153,6 +159,14 @@ function animate() {
 	render();
 	stats.update();
 	analyzeAudio();
+	//adjustSizes();
+}
+
+function adjustSizes(){
+	for(var i = 0; i < stuffHeads.length; i++){
+		var mesh = stuffHeads[i].mesh;
+		mesh.scale.x = audioLevels[i] / 200;
+	}
 }
 
 function analyzeAudio(){
@@ -174,12 +188,25 @@ function analyzeAudio(){
 			var dataArray = new Uint8Array(analyser.frequencyBinCount);
 			analyser.getByteFrequencyData(dataArray);
 			var average = 0;
-			for(var j=i*(dataArray.length / stuffHeads.length); j<(i+1)*(dataArray.length / stuffHeads.length); j++) {
+			var head = stuffHeads[i];
+			var lowCut = parseInt(Math.min(head.attributes.lowCut,head.attributes.highCut));
+			var highCut = parseInt(Math.max(head.attributes.lowCut,head.attributes.highCut));
+			var bandWidth = Math.abs(highCut - lowCut);
+			for(var j=lowCut; j<highCut; j++) {
 			    average += parseFloat(dataArray[j]);
-			    console.log
 			}
-			average = average/dataArray.length;
+			average = average/bandWidth;
 			audioLevels[i] = average;
+			if(verbose){
+				var logStuff = {
+					dataArray: dataArray,
+					bandWidth: bandWidth,
+					lowCut: lowCut, 
+					highCut: highCut,
+					average: average
+				};
+				console.log(logStuff);
+			}
 		}
 	}
 }
