@@ -8,7 +8,7 @@ var stuffHeads = new Array();
 var audio;
 var gui;
 var audioLevels = [0.0,0.0,0.0];
-var preset = JSON.parse('[{"scrambleAmplitude":12.13165269504664,"scramble":true,"tweenSpeed":243.39042084703186,"posX":-175,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"scrambleAmplitude":24.814744148959036,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":106.58263475233196,"posZ":7.32365815649581,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"scrambleAmplitude":40.02818886539817,"scramble":true,"tweenSpeed":1,"posX":172.75528581622268,"posY":283.04303758937397,"posZ":-36.79144255276469,"lowCut":598.5536864232465,"highCut":1024}]');
+var preset = JSON.parse('[{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":243.39042084703186,"posX":-175,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":106.58263475233196,"posZ":7.32365815649581,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":1,"posX":172.75528581622268,"posY":283.04303758937397,"posZ":-36.79144255276469,"lowCut":598.5536864232465,"highCut":1024}]');
 window.onload = function() {
 	gui = new dat.GUI();
 	init();
@@ -40,7 +40,7 @@ function initAudio(filenames,absolute){
 }
 
 function initHeads(path){
-	for(var i = 0; i < 3; i++){
+	//for(var i = 0; i < 3; i++){
 		(function(i){
 			stuffHeads.push(stuffHead(THREE).create(function(head){
 				startTweens(i);
@@ -52,8 +52,12 @@ function initHeads(path){
 				head.mesh.position.y = head.attributes.posY;
 				head.mesh.position.z = head.attributes.posZ;
 				var folder = gui.addFolder("head " + i);
-				folder.add(head.attributes, 'scrambleAmplitude', 0.0, 50.0);
+				folder.add(head.attributes, 'scrambleAmplitude', 0.0, 1.0);
 				folder.add(head.attributes, 'tweenSpeed', 1, 1000);
+				folder.add(head.attributes, 'scale', 0, 5)
+					.onChange(function(value){
+						head.mesh.scale.set(value,value,value);
+					});
 				folder.add(head.attributes, 'posX', -500, 500)
 					.onChange(function(value){
 						head.mesh.position.x = value;
@@ -72,8 +76,8 @@ function initHeads(path){
 
 				//head.mesh.translateX(i*200);
 			}, path));
-		}(i))
-	}
+		}(stuffHeads.length))
+	//}
 }
 
 
@@ -93,10 +97,10 @@ function initScene(){
 
 	//scene.add( new THREE.AmbientLight( 0x440000 ) );
 
-	var directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0x9999ff );
-	directionalLight.position.x = 100;
-	directionalLight.position.y = 100;
-	directionalLight.position.z = 30;
+	var directionalLight = new THREE.DirectionalLight(0xffffff );
+	directionalLight.position.x = 800;
+	directionalLight.position.y = 30;
+	directionalLight.position.z = -50;
 	//directionalLight.position.normalize();
 	scene.add( directionalLight );
 
@@ -104,7 +108,7 @@ function initScene(){
 	particleLight.add( pointLight );
 	particleLight.position.x = -100;
 	particleLight.position.y = 100;
-	particleLight.position.z = -50;
+	particleLight.position.z = 0;
 
 	renderer = new THREE.WebGLRenderer({antialiasing: true });
 	renderer.setPixelRatio( window.devicePixelRatio );
@@ -138,10 +142,11 @@ function tweenVertex(headIndex, faceVertex, originalFaceVertex){
 	var faceGeometry = stuffHeads[headIndex].mesh.geometry;
 	var attributes = stuffHeads[headIndex].attributes;
 	if(attributes.scramble){
-		new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y})
+		new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y, z:faceVertex.z})
 		.to({
-				x:originalFaceVertex.x + (Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0),
-				y:originalFaceVertex.y + (Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0)
+				x:originalFaceVertex.x * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude),//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0),
+				y:originalFaceVertex.y * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude),//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0)
+				z:originalFaceVertex.z * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude)//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0)
 			},Math.random() * attributes.tweenSpeed)
 		.onUpdate(function(){
 			faceVertex.x = this.x;
