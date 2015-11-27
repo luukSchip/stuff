@@ -47,7 +47,7 @@ function initHeads(path){
 				scene.add(head.scene);
 				//var preset = JSON.parse(preset);
 				//console.log(preset);
-				head.attributes = preset[i];
+				//head.attributes = preset[i];
 				head.mesh.position.x = head.attributes.posX;
 				head.mesh.position.y = head.attributes.posY;
 				head.mesh.position.z = head.attributes.posZ;

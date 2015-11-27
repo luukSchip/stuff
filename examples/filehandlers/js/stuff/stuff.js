@@ -1,25 +1,88 @@
+//test//
+
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
+var yRotationFactor = 1;
+var xRotation = 0;
+var zPosition = 10.0;
 var verbose = false;
 var container, stats;
+var orbitBox;
 var camera, scene, renderer, objects;
 var particleLight;
 var stuffHeads = new Array();
 var audio;
 var gui;
-var audioLevels = [0.0,0.0,0.0];
-var preset = JSON.parse('[{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":243.39042084703186,"posX":-175,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":106.58263475233196,"posZ":7.32365815649581,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":1,"posX":172.75528581622268,"posY":283.04303758937397,"posZ":-36.79144255276469,"lowCut":598.5536864232465,"highCut":1024}]');
+var audioLevels = new Array();
+//var preset = JSON.parse('[{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":243.39042084703186,"posX":0,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":106.58263475233196,"posZ":7.32365815649581,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":1,"posX":0,"posY":283.04303758937397,"posZ":-36.79144255276469,"lowCut":598.5536864232465,"highCut":1024}]');
+var attributes = {
+	camRotationX: 0.3,
+	camRotationY: 0.07
+};
+//var modelFiles = ["1.dae","2.dae"];//["1.dae","2.dae","3.dae","4.dae","5.dae"];
+
 window.onload = function() {
-	gui = new dat.GUI();
 	init();
 };
 
+function exportPreset(){
+	var attributesArray = new Array();
+	for(var i = 0; i < stuffHeads.length; i++){
+		attributesArray.push(stuffHeads[i].attributes);
+	}
+	window.prompt("Kopiëer en stuur naar Luuk:", JSON.stringify(attributesArray));
+}
+
+function importPreset(){
+	var presetString = window.prompt("Plak hier uw preset", "");
+	var attributesArray = JSON.parse(presetString);
+	console.log(attributesArray);
+	for(var i = 0; i < stuffHeads.length; i++){
+		var head = stuffHeads[i];
+		var presetAttributes = attributesArray[i];
+		for(key in head.attributes){
+			head.attributes[key] = presetAttributes[key];
+		}
+		head.refresh();
+	}
+}
 
 function init() {
+	initGui();
 	initFileHandlers();
 	initScene();
 	animate();
+	initMouseHandlers();
+}
 
+function loadModels(path){
+	var loader = new THREE.ColladaLoader();
+	//loader.options.convertUpAxis = true;
+	loader.load( path , function ( collada ) {
+		scene.add(collada.scene);
+		for(var i = 0; i < collada.scene.children[0].children.length; i++){
+			console.log(collada.scene.children[0].children.length);
+			stuffHead(THREE).fromCollada(collada.scene.children[0].children[i],function(head){onLoadedHead(head,i)});
+		}
+	});
+}
+
+function initGui(){
+	gui = new dat.GUI();
+	gui.add(attributes, 'camRotationY', 0.0, 1.0).listen();
+	gui.add(attributes, 'camRotationX', 0.0, 1.0).listen();
+}
+
+function initMouseHandlers(){
+	document.onmousemove = function (oPssEvt2) {
+	    var oMsEvent2 = oPssEvt2 || /* IE */ window.event;
+	    yRotationFactor = 0.5 - (parseFloat(oMsEvent2.clientX) / parseFloat(window.innerWidth));
+	    xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
+	};
+	window.addWheelListener(document.body,function(e){
+		console.log(e.deltaY);
+		zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
+	},false);
 }
 
 function initFileHandlers(){
@@ -27,12 +90,14 @@ function initFileHandlers(){
 	    initAudio([URL.createObjectURL(e.target.files[0])],true);
 	}
 	function handleModelFileSelect(e) {
-	    initHeads(URL.createObjectURL(e.target.files[0]),true);
+	    loadModels(URL.createObjectURL(e.target.files[0]),true);
 	}
 	document.getElementById('audio-file')
 		.addEventListener('change', handleAudioFileSelect, false);
 	document.getElementById('model-file')
 		.addEventListener('change', handleModelFileSelect, false);
+	document.getElementById('export-button').onclick = exportPreset;
+	document.getElementById('import-button').onclick = importPreset;
 }
 
 function initAudio(filenames,absolute){
@@ -42,42 +107,43 @@ function initAudio(filenames,absolute){
 function initHeads(path){
 	//for(var i = 0; i < 3; i++){
 		(function(i){
-			stuffHeads.push(stuffHead(THREE).create(function(head){
-				startTweens(i);
-				scene.add(head.scene);
-				//var preset = JSON.parse(preset);
-				//console.log(preset);
-				head.attributes = preset[i];
-				head.mesh.position.x = head.attributes.posX;
-				head.mesh.position.y = head.attributes.posY;
-				head.mesh.position.z = head.attributes.posZ;
-				var folder = gui.addFolder("head " + i);
-				folder.add(head.attributes, 'scrambleAmplitude', 0.0, 1.0);
-				folder.add(head.attributes, 'tweenSpeed', 1, 1000);
-				folder.add(head.attributes, 'scale', 0, 5)
-					.onChange(function(value){
-						head.mesh.scale.set(value,value,value);
-					});
-				folder.add(head.attributes, 'posX', -500, 500)
-					.onChange(function(value){
-						head.mesh.position.x = value;
-					});
-				folder.add(head.attributes, 'posY', -500, 500)
-					.onChange(function(value){
-						head.mesh.position.y = value;
-					});
-				folder.add(head.attributes, 'posZ', -500, 500)
-					.onChange(function(value){
-						head.mesh.position.z = value;
-					});
-				folder.add(head.attributes, 'lowCut', 0, 1024);
-				folder.add(head.attributes, 'highCut', 0, 1024);
-
-
-				//head.mesh.translateX(i*200);
-			}, path));
+			stuffHeads.push(stuffHead(THREE).create(function(head){onLoadedHead(head,i)}, path));
 		}(stuffHeads.length))
 	//}
+}
+
+function onLoadedHead(head,i){
+	console.log("onLoadedHead " + i);
+	console.log(head);
+	audioLevels.push(0.0);
+	stuffHeads.push(head);
+	startTweens(i);
+	// scene.add(head.mesh);
+	var folder = gui.addFolder("head " + i);
+	folder.add(head.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
+	folder.add(head.attributes, 'tweenSpeed', 1, 1000).listen();
+	folder.add(head.attributes, 'scale', 0, 5)
+		.listen()
+		.onChange(function(value){
+			head.mesh.scale.set(value,value,value);
+		});
+	folder.add(head.attributes, 'posX', -500, 500)
+		.listen()
+		.onChange(function(value){
+			head.mesh.position.x = value;
+		});
+	folder.add(head.attributes, 'posY', -500, 500)
+		.listen()
+		.onChange(function(value){
+			head.mesh.position.y = value;
+		});
+	folder.add(head.attributes, 'posZ', -500, 500)
+		.listen()
+		.onChange(function(value){
+			head.mesh.position.z = value;
+		});
+	folder.add(head.attributes, 'lowCut', 0, 1024).listen();
+	folder.add(head.attributes, 'highCut', 0, 1024).listen();
 }
 
 
@@ -85,10 +151,15 @@ function initScene(){
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
 
+	orbitBox = new THREE.Object3D()
+
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-	camera.position.set( 2, 2, 9 );
+	camera.position.set( 2, 2, zPosition );
+	orbitBox.add(camera);
 
 	scene = new THREE.Scene();
+
+	scene.add(orbitBox);
 
 	particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
 	scene.add( particleLight );
@@ -104,7 +175,7 @@ function initScene(){
 	//directionalLight.position.normalize();
 	scene.add( directionalLight );
 
-	var pointLight = new THREE.PointLight( 0x441922, 4 );
+	var pointLight = new THREE.PointLight( 0xffffff, 4 );
 	particleLight.add( pointLight );
 	particleLight.position.x = -100;
 	particleLight.position.y = 100;
@@ -141,16 +212,18 @@ function startTweens(headIndex){
 function tweenVertex(headIndex, faceVertex, originalFaceVertex){
 	var faceGeometry = stuffHeads[headIndex].mesh.geometry;
 	var attributes = stuffHeads[headIndex].attributes;
+	var amplitude = 1 - (0.5 - Math.random() * 2) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0);
 	if(attributes.scramble){
 		new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y, z:faceVertex.z})
 		.to({
-				x:originalFaceVertex.x * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude),//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0),
-				y:originalFaceVertex.y * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude),//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0)
-				z:originalFaceVertex.z * ((1 - attributes.scrambleAmplitude/2) + Math.random()*attributes.scrambleAmplitude)//(Math.random() - 0.5) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0)
+				x:originalFaceVertex.x * amplitude,
+				y:originalFaceVertex.y * amplitude,
+				z:originalFaceVertex.z * amplitude
 			},Math.random() * attributes.tweenSpeed)
 		.onUpdate(function(){
 			faceVertex.x = this.x;
 			faceVertex.y = this.y;
+			faceVertex.z = this.z;
 			faceGeometry.verticesNeedUpdate = true;
 
 			faceGeometry.normalsNeedUpdate = true;
@@ -165,14 +238,9 @@ function tweenVertex(headIndex, faceVertex, originalFaceVertex){
 
 function animate() {
 	requestAnimationFrame( animate );
-	// if(attributes.scramble){
-	// 	TWEEN.update();
-	// }
 	TWEEN.update();
 	render();
-	//stats.update();
 	analyzeAudio();
-	//adjustSizes();
 }
 
 function adjustSizes(){
@@ -232,13 +300,10 @@ function render() {
 
 	var timer = Date.now() * 0.0005;
 
-	 camera.lookAt( scene.position );
-
-	// particleLight.position.x = Math.sin( timer * 4 ) * 10000;
-	// particleLight.position.y = Math.cos( timer * 5 ) * 10000;
-	// particleLight.position.z = Math.cos( timer * 4 ) * 10000;
-
-	//THREE.AnimationHandler.update( clock.getDelta() );
+	orbitBox.rotateY(attributes.camRotationY * yRotationFactor);
+	camera.position.y = 20 * xRotation * attributes.camRotationX;
+	 camera.position.z = zPosition;
+	camera.lookAt( scene.position );
 
 	renderer.render( scene, camera );
 
