@@ -14,37 +14,53 @@ var stuffHeads = new Array();
 var audio;
 var gui;
 var audioLevels = new Array();
-//var preset = JSON.parse('[{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":243.39042084703186,"posX":0,"posY":0,"posZ":0,"lowCut":0,"highCut":271.0431787576966},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":113.64270613107823,"posX":0,"posY":106.58263475233196,"posZ":7.32365815649581,"lowCut":203.28238406827242,"highCut":565.7618040873855},{"scale":1.0,"scrambleAmplitude":0.2,"scramble":true,"tweenSpeed":1,"posX":0,"posY":283.04303758937397,"posZ":-36.79144255276469,"lowCut":598.5536864232465,"highCut":1024}]');
 var attributes = {
 	camRotationX: 0.3,
 	camRotationY: 0.07
 };
-//var modelFiles = ["1.dae","2.dae"];//["1.dae","2.dae","3.dae","4.dae","5.dae"];
 
 window.onload = function() {
 	init();
 };
 
-function exportPreset(){
+function minimizeMenu(e){
+	console.log("minimizeMenu");
+	console.log(e);
+}
+
+function exportPreset(e){
+	console.log(e);
 	var attributesArray = new Array();
 	for(var i = 0; i < stuffHeads.length; i++){
 		attributesArray.push(stuffHeads[i].attributes);
 	}
-	window.prompt("Kopiëer en stuur naar Luuk:", JSON.stringify(attributesArray));
+	var fileParts = [JSON.stringify(attributesArray)];
+	var myBlob = new Blob(fileParts, {type : 'application/json'});
+	var myFile = utils.blobToFile(myBlob,"preset.json");
+	var objectUrl = URL.createObjectURL(myFile);
+	var fileName = window.prompt("Filename", "preset.json");
+	e.target.href = objectUrl;
+	e.target.download = fileName;
 }
 
-function importPreset(){
-	var presetString = window.prompt("Plak hier uw preset", "");
-	var attributesArray = JSON.parse(presetString);
-	console.log(attributesArray);
-	for(var i = 0; i < stuffHeads.length; i++){
-		var head = stuffHeads[i];
-		var presetAttributes = attributesArray[i];
-		for(key in head.attributes){
-			head.attributes[key] = presetAttributes[key];
+function importPreset(presetFile){
+	var reader = new FileReader();
+	reader.onload = (function(theFile) {
+	  return function(e) {
+		var presetString = e.target.result;
+		var attributesArray = JSON.parse(presetString);
+		console.log(attributesArray);
+		for(var i = 0; i < stuffHeads.length; i++){
+			var head = stuffHeads[i];
+			var presetAttributes = attributesArray[i];
+			for(key in head.attributes){
+				head.attributes[key] = presetAttributes[key];
+			}
+			head.refresh();
 		}
-		head.refresh();
-	}
+	  };
+	})(presetFile);
+	reader.readAsBinaryString(presetFile);
 }
 
 function init() {
@@ -57,7 +73,6 @@ function init() {
 
 function loadModels(path){
 	var loader = new THREE.ColladaLoader();
-	//loader.options.convertUpAxis = true;
 	loader.load( path , function ( collada ) {
 		scene.add(collada.scene);
 		for(var i = 0; i < collada.scene.children[0].children.length; i++){
@@ -71,6 +86,11 @@ function initGui(){
 	gui = new dat.GUI();
 	gui.add(attributes, 'camRotationY', 0.0, 1.0).listen();
 	gui.add(attributes, 'camRotationX', 0.0, 1.0).listen();
+
+	$(".menu-container .minimize").each(function(){
+		console.log(this);
+		$(this).click(function(){console.log(this);return false;});
+	});
 }
 
 function initMouseHandlers(){
@@ -92,12 +112,16 @@ function initFileHandlers(){
 	function handleModelFileSelect(e) {
 	    loadModels(URL.createObjectURL(e.target.files[0]),true);
 	}
+	function handlePresetFileSelect(e) {
+	    importPreset(e.target.files[0]);
+	}
 	document.getElementById('audio-file')
 		.addEventListener('change', handleAudioFileSelect, false);
 	document.getElementById('model-file')
 		.addEventListener('change', handleModelFileSelect, false);
+	document.getElementById('preset-file')
+		.addEventListener('change', handlePresetFileSelect, false);
 	document.getElementById('export-button').onclick = exportPreset;
-	document.getElementById('import-button').onclick = importPreset;
 }
 
 function initAudio(filenames,absolute){
@@ -105,11 +129,9 @@ function initAudio(filenames,absolute){
 }
 
 function initHeads(path){
-	//for(var i = 0; i < 3; i++){
-		(function(i){
-			stuffHeads.push(stuffHead(THREE).create(function(head){onLoadedHead(head,i)}, path));
-		}(stuffHeads.length))
-	//}
+	(function(i){
+		stuffHeads.push(stuffHead(THREE).create(function(head){onLoadedHead(head,i)}, path));
+	}(stuffHeads.length))
 }
 
 function onLoadedHead(head,i){
@@ -118,7 +140,6 @@ function onLoadedHead(head,i){
 	audioLevels.push(0.0);
 	stuffHeads.push(head);
 	startTweens(i);
-	// scene.add(head.mesh);
 	var folder = gui.addFolder("head " + i);
 	folder.add(head.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
 	folder.add(head.attributes, 'tweenSpeed', 1, 1000).listen();
@@ -166,13 +187,10 @@ function initScene(){
 
 	// Lights
 
-	//scene.add( new THREE.AmbientLight( 0x440000 ) );
-
 	var directionalLight = new THREE.DirectionalLight(0xffffff );
 	directionalLight.position.x = 800;
 	directionalLight.position.y = 30;
 	directionalLight.position.z = -50;
-	//directionalLight.position.normalize();
 	scene.add( directionalLight );
 
 	var pointLight = new THREE.PointLight( 0xffffff, 4 );
@@ -251,18 +269,6 @@ function adjustSizes(){
 }
 
 function analyzeAudio(){
-	// for(var i = 0; i < audio.analysers.length; i++){
-	// 	//var buffer = audio.sources[i].buffer;
-	// 	var analyser = audio.analysers[i];
-	// 	var dataArray = new Uint8Array(analyser.frequencyBinCount);
-	// 	analyser.getByteFrequencyData(dataArray);
-	// 	var average = 0;
-	// 	for(var j=0; j<dataArray.length; j++) {
-	// 	    average += parseFloat(dataArray[j]);
-	// 	}
-	// 	average = average/dataArray.length;
-	// 	audioLevels[i] = average;
-	// }
 	for(var i = 0; i < stuffHeads.length; i++){
 		if(audio){
 			if(audio.analysers.length > 0){

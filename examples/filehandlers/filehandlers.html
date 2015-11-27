@@ -20,22 +20,45 @@
 				text-align: center;
 				z-index: 100;
 				display:block;
+			}
 
+			#file-menu{
+				position:fixed; 
+				z-index:999; 
+				color:white;
+			    margin: 5px;
+			    border: 1px solid white;
+			    padding: 20px;
+			}
+
+			#file-menu label{
+			    width: 120px;
+				display: inline-block;
 			}
 
 			a { color: skyblue }
 		</style>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	</head>
 	<body>
-		<div style="position:fixed; z-index:999; color:white;">
-			<label for="model-file">model:</label>
-			<input type="file" id="model-file"/>
-			<br>
-			<label for="audio-file">audio:</label>
-			<input type="file" id="audio-file"/>
-			<br>
-			<button id="import-button">import preset</button>
-			<button id="export-button">export preset</button>
+		<div class="menu-container" id="file-menu">
+			<div class="title">
+				<p></p>
+				<a href="" class="minimize">-</a>
+			</div>
+			<div class="menu">
+				<label for="model-file">model:</label>
+				<input type="file" id="model-file"/>
+				<br>
+				<label for="audio-file">audio:</label>
+				<input type="file" id="audio-file"/>
+				<br>
+				<label for="preset-file">import preset:</label>
+				<input type="file" id="preset-file"/>
+				<br>
+				<label for="export-button">export preset:</label>
+				<a href="" id="export-button" download>export</a>
+			</div>
 		</div>
 
 		<script src="../../build/three.min.js"></script>
