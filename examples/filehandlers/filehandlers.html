@@ -28,12 +28,24 @@
 				color:white;
 			    margin: 5px;
 			    border: 1px solid white;
-			    padding: 20px;
 			}
 
-			#file-menu label{
+			.menu-container label{
 			    width: 120px;
 				display: inline-block;
+			}
+
+			.menu-container .menu{
+				display: none;
+				padding: 10px;
+			} 
+
+			.menu-container .title {
+			    background: white;
+			    color: black;
+			    /* margin: -20px; */
+			    padding: 10px;
+			    cursor: pointer;
 			}
 
 			a { color: skyblue }
@@ -43,8 +55,7 @@
 	<body>
 		<div class="menu-container" id="file-menu">
 			<div class="title">
-				<p></p>
-				<a href="" class="minimize">-</a>
+				<span>File</span>
 			</div>
 			<div class="menu">
 				<label for="model-file">model:</label>

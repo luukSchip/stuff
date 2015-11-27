@@ -23,10 +23,6 @@ window.onload = function() {
 	init();
 };
 
-function minimizeMenu(e){
-	console.log("minimizeMenu");
-	console.log(e);
-}
 
 function exportPreset(e){
 	console.log(e);
@@ -87,10 +83,20 @@ function initGui(){
 	gui.add(attributes, 'camRotationY', 0.0, 1.0).listen();
 	gui.add(attributes, 'camRotationX', 0.0, 1.0).listen();
 
-	$(".menu-container .minimize").each(function(){
-		console.log(this);
-		$(this).click(function(){console.log(this);return false;});
+	$(".menu-container .title").each(function(){
+		$(this).click(minimizeMenu);
 	});
+
+
+	function minimizeMenu(e){
+		var $el = $(e.target).closest(".menu-container").find(".menu");
+		if($el.is(':visible')){
+			$el.hide();
+		}else{
+			$el.show();
+		}
+		return false;
+	}
 }
 
 function initMouseHandlers(){
