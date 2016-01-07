@@ -26,6 +26,7 @@ var stuffAudio = (function(){
 			                console.log("audio loaded " + i);
 			                if(i == audioData.length - 1){
 			                	playAudio(sources);
+
 			                }
 			            },
 

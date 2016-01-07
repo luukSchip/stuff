@@ -7,7 +7,7 @@
 		<style>
 			body {
 				font-family: Monospace;
-				background-color: #000000;
+				background-color: #ffffff;
 				margin: 0px;
 				overflow: hidden;
 			}
@@ -59,31 +59,24 @@
 				<span>File</span>
 			</div>
 			<div class="menu">
-				<label for="model-file">model:</label>
-				<input type="file" id="model-file"/>
-				<br>
 				<label for="thing-file">thing:</label>
 				<input type="file" id="thing-file"/>
-				<br>
-				<label for="audio-file">audio:</label>
-				<input type="file" id="audio-file"/>
-				<br>
-				<label for="preset-file">import preset:</label>
-				<input type="file" id="preset-file"/>
-				<br>
-				<label for="export-button">export preset:</label>
-				<a href="" id="export-button" download>export</a>
 			</div>
 		</div>
 
-		<script src="../../build/three.min.js"></script>
+		<div id ="webGL-container">
+
+            <script src="../../build/three.min.js"></script>
+        <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>-->
 		<script src="../js/loaders/collada/Animation.js"></script>
 		<script src="../js/loaders/collada/AnimationHandler.js"></script>
 		<script src="../js/loaders/collada/KeyFrameAnimation.js"></script>
 
 		<script src="../js/loaders/ColladaLoader.js"></script>
+		<script src="../js/controls/OrbitControls.js"></script>
 
 		<script src="../js/Detector.js"></script>
+		<script src="../js/MorphAnimation.js"></script>
 		<script src="../js/libs/stats.min.js"></script>
    		<script src='../js/libs/dat.gui.min.js'></script>
    		<script src='../js/libs/tween.min.js'></script>

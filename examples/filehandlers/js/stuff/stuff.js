@@ -8,12 +8,12 @@ var zPosition = 10.0;
 var verbose = false;
 var container, stats;
 var orbitBox;
-var camera, scene, renderer, objects;
+var camera, scene, renderer;
 var particleLight;
-var stuffHeads = new Array();
+var people = [];
 var audio;
 var gui;
-var audioLevels = new Array();
+var audioLevels = [];
 var attributes = {
 	camRotationX: 0.3,
 	camRotationY: 0.07
@@ -26,9 +26,9 @@ window.onload = function() {
 
 function exportPreset(e){
 	console.log(e);
-	var attributesArray = new Array();
-	for(var i = 0; i < stuffHeads.length; i++){
-		attributesArray.push(stuffHeads[i].attributes);
+	var attributesArray = [];
+	for(var i = 0; i < people.length; i++){
+		attributesArray.push(people[i].attributes);
 	}
 	var fileParts = [JSON.stringify(attributesArray)];
 	var myBlob = new Blob(fileParts, {type : 'application/json'});
@@ -46,13 +46,13 @@ function importPreset(presetFile){
 		var presetString = e.target.result;
 		var attributesArray = JSON.parse(presetString);
 		console.log(attributesArray);
-		for(var i = 0; i < stuffHeads.length; i++){
-			var head = stuffHeads[i];
+		for(var i = 0; i < people.length; i++){
+			var person = people[i];
 			var presetAttributes = attributesArray[i];
-			for(key in head.attributes){
-				head.attributes[key] = presetAttributes[key];
+			for(key in person.attributes){
+				person.attributes[key] = presetAttributes[key];
 			}
-			head.refresh();
+			person.refresh();
 		}
 	  };
 	})(presetFile);
@@ -73,7 +73,7 @@ function loadModels(path){
 		scene.add(collada.scene);
 		for(var i = 0; i < collada.scene.children[0].children.length; i++){
 			console.log(collada.scene.children[0].children.length);
-			stuffHead(THREE).fromCollada(collada.scene.children[0].children[i],function(head){onLoadedHead(head,i)});
+			stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(head){onLoadedPerson(head,i)});
 		}
 	});
 }
@@ -134,43 +134,44 @@ function initAudio(filenames,absolute){
 	audio = stuffAudio(filenames,absolute).init();
 }
 
-function initHeads(path){
+function initPeople(path){
 	(function(i){
-		stuffHeads.push(stuffHead(THREE).create(function(head){onLoadedHead(head,i)}, path));
-	}(stuffHeads.length))
+		people.push(stuffObject(THREE).create(function(head){onLoadedPerson(head,i)}, path));
+	}(people.length))
 }
 
-function onLoadedHead(head,i){
-	console.log("onLoadedHead " + i);
-	console.log(head);
+function onLoadedPerson(person, i){
+	console.log("onLoadedPerson " + i);
+	console.log(person);
 	audioLevels.push(0.0);
-	stuffHeads.push(head);
+	people.push(person);
 	startTweens(i);
-	var folder = gui.addFolder("head " + i);
-	folder.add(head.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
-	folder.add(head.attributes, 'tweenSpeed', 1, 1000).listen();
-	folder.add(head.attributes, 'scale', 0, 5)
+    person.startAnimations();
+	var folder = gui.addFolder("person " + i);
+	folder.add(person.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
+	folder.add(person.attributes, 'tweenSpeed', 1, 1000).listen();
+	folder.add(person.attributes, 'scale', 0, 5)
 		.listen()
 		.onChange(function(value){
-			head.mesh.scale.set(value,value,value);
+			person.mesh.scale.set(value,value,value);
 		});
-	folder.add(head.attributes, 'posX', -500, 500)
+	folder.add(person.attributes, 'posX', -500, 500)
 		.listen()
 		.onChange(function(value){
-			head.mesh.position.x = value;
+			person.mesh.position.x = value;
 		});
-	folder.add(head.attributes, 'posY', -500, 500)
+	folder.add(person.attributes, 'posY', -500, 500)
 		.listen()
 		.onChange(function(value){
-			head.mesh.position.y = value;
+			person.mesh.position.y = value;
 		});
-	folder.add(head.attributes, 'posZ', -500, 500)
+	folder.add(person.attributes, 'posZ', -500, 500)
 		.listen()
 		.onChange(function(value){
-			head.mesh.position.z = value;
+			person.mesh.position.z = value;
 		});
-	folder.add(head.attributes, 'lowCut', 0, 1024).listen();
-	folder.add(head.attributes, 'highCut', 0, 1024).listen();
+	folder.add(person.attributes, 'lowCut', 0, 1024).listen();
+	folder.add(person.attributes, 'highCut', 0, 1024).listen();
 }
 
 
@@ -223,7 +224,7 @@ function onWindowResize() {
 }
 
 function startTweens(headIndex){
-	var head = stuffHeads[headIndex];
+	var head = people[headIndex];
 	var faceVertices = head.faceVertices;
 	var originalFaceVertices = head.originalFaceVertices;
 	for(var i = 0; i < faceVertices.length; i++){
@@ -234,8 +235,8 @@ function startTweens(headIndex){
 }
 
 function tweenVertex(headIndex, faceVertex, originalFaceVertex){
-	var faceGeometry = stuffHeads[headIndex].mesh.geometry;
-	var attributes = stuffHeads[headIndex].attributes;
+	var faceGeometry = people[headIndex].mesh.geometry;
+	var attributes = people[headIndex].attributes;
 	var amplitude = 1 - (0.5 - Math.random() * 2) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0);
 	if(attributes.scramble){
 		new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y, z:faceVertex.z})
@@ -260,29 +261,36 @@ function tweenVertex(headIndex, faceVertex, originalFaceVertex){
 }
 
 
+function updateAnimations() {
+    for(var i = 0; i < people.length; i++){
+        people[i].updateAnimations();
+    }
+}
+
 function animate() {
 	requestAnimationFrame( animate );
 	TWEEN.update();
 	render();
 	analyzeAudio();
+    updateAnimations();
 }
 
 function adjustSizes(){
-	for(var i = 0; i < stuffHeads.length; i++){
-		var mesh = stuffHeads[i].mesh;
+	for(var i = 0; i < people.length; i++){
+		var mesh = people[i].mesh;
 		mesh.scale.x = audioLevels[i] / 200;
 	}
 }
 
 function analyzeAudio(){
-	for(var i = 0; i < stuffHeads.length; i++){
+	for(var i = 0; i < people.length; i++){
 		if(audio){
 			if(audio.analysers.length > 0){
 				var analyser = audio.analysers[0];
 				var dataArray = new Uint8Array(analyser.frequencyBinCount);
 				analyser.getByteFrequencyData(dataArray);
 				var average = 0;
-				var head = stuffHeads[i];
+				var head = people[i];
 				var lowCut = parseInt(Math.min(head.attributes.lowCut,head.attributes.highCut));
 				var highCut = parseInt(Math.max(head.attributes.lowCut,head.attributes.highCut));
 				var bandWidth = Math.abs(highCut - lowCut);

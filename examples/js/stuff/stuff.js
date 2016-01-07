@@ -42,7 +42,7 @@ function initAudio(filenames,absolute){
 function initHeads(path){
 	for(var i = 0; i < 3; i++){
 		(function(i){
-			stuffHeads.push(stuffHead(THREE).create(function(head){
+			stuffHeads.push(stuffObject(THREE).create(function(head){
 				startTweens(i);
 				scene.add(head.scene);
 				//var preset = JSON.parse(preset);

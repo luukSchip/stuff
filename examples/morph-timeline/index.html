@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>STUFF. - morphtest2</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000000;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        #info {
+            color: #fff;
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display:block;
+        }
+
+        #file-menu{
+            position:fixed;
+            z-index:999;
+            color:white;
+            margin: 5px;
+            border: 1px solid white;
+        }
+
+        .menu-container label{
+            width: 120px;
+            display: inline-block;
+        }
+
+        .menu-container .menu{
+            display: none;
+            padding: 10px;
+            background: black;
+        }
+
+        .menu-container .title {
+            background: white;
+            color: black;
+            /* margin: -20px; */
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        a { color: skyblue }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+<div class="menu-container" id="file-menu">
+    <div class="title">
+        <span>File</span>
+    </div>
+    <div class="menu">
+        <label for="model-file">model:</label>
+        <input type="file" id="model-file"/>
+        <br>
+        <label for="thing-file">thing:</label>
+        <input type="file" id="thing-file"/>
+        <br>
+        <label for="audio-file">audio:</label>
+        <input type="file" id="audio-file"/>
+        <br>
+        <label for="preset-file">import preset:</label>
+        <input type="file" id="preset-file"/>
+        <br>
+        <label for="export-button">export preset:</label>
+        <a href="" id="export-button" download>export</a>
+    </div>
+</div>
+
+<script src="../../build/three.min.js"></script>
+<script src="../js/loaders/collada/Animation.js"></script>
+<script src="../js/loaders/collada/AnimationHandler.js"></script>
+<script src="../js/loaders/collada/KeyFrameAnimation.js"></script>
+
+<script src="../js/loaders/ColladaLoader.js"></script>
+<script src="../js/controls/OrbitControls.js"></script>
+
+<script src="../js/Detector.js"></script>
+<script src="../js/MorphAnimation.js"></script>
+<script src="../js/AnimationAction.js"></script>
+<script src="../js/AnimationMixer.js"></script>
+<script src="../js/AnimationClipCreator.js"></script>
+<script src="../js/libs/stats.min.js"></script>
+<script src='../js/libs/dat.gui.min.js'></script>
+<script src='../js/libs/tween.min.js'></script>
+
+<script src="js/stuff/stuffObject.js"></script>
+<script src="js/stuff/stuffThing.js"></script>
+<script src="js/stuff/stuffAudio.js"></script>
+<script src="js/stuff/helpers.js"></script>
+<script src="js/stuff/stuff.js"></script>
+</body>
+</html>

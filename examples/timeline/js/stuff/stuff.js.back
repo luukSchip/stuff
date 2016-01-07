@@ -324,7 +324,7 @@ function analyzeAudio(){
 					var logStuff = {
 						dataArray: dataArray,
 						bandWidth: bandWidth,
-						lowCut: lowCut, 
+						lowCut: lowCut,
 						highCut: highCut,
 						average: average
 					};
@@ -374,7 +374,7 @@ var timeEvents = [
 		time: 8,
 		action: function(){
 			console.log("het");
-			
+
 		}
 	}
 ];
