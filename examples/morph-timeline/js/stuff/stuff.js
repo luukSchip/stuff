@@ -86,6 +86,20 @@ function importPreset(presetFile){
     reader.readAsBinaryString(presetFile);
 }
 
+function importEvents(eventsFile){
+    var reader = new FileReader();
+    reader.onload = (function(theFile) {
+        return function(e) {
+            console.log(e)
+            var eventsString = e.target.result;
+            var scrpt = document.createElement('script');
+            scrpt.innerHTML=eventsString;
+            document.head.appendChild(scrpt);
+        };
+    })(eventsFile);
+    reader.readAsBinaryString(eventsFile);
+}
+
 function initGui(){
     gui = new dat.GUI();
     gui.add(attributes, 'camRotationY', 0.0, 1.0).listen();
@@ -107,7 +121,6 @@ function initGui(){
 }
 
 function loadThings(name,path){
-    //loader = new THREE.ObjectLoader();
     loader = new THREE.JSONLoader();
 	loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
 }
@@ -137,36 +150,12 @@ function addThing(name,geometry,materials){
     }
 
     model = new THREE.Mesh( geometry, material );
-    //model.scale.set (10,10,10);
     scene.add( model );
 
-    // var animation = new THREE.MorphAnimation( model );
-    // animation.play();
-    // animations.push(animation);
-
-    things[name] = stuffThing(THREE).create(model);
+    things[name] = stuffThing(THREE).create(model, name);
+    
 
 }
-//function addThing(thingScene){
-//    scene.add( thingScene );
-//    thingScene.traverse(function(object){
-//        console.log(object);
-//        if(object instanceof THREE.Mesh){
-//            console.log("is a mesh");
-//            if(object.morphTargetInfluences){
-//                object.material.morphTargets = true;
-//                animation = new THREE.MorphAnimation( object );
-//                animation.play();
-//            }
-//        }
-//    });
-//    for(var i = 0; i < thingScene.animations.length; i++){
-//        console.log(thingScene.animations[i]);
-//        //animations[i].start();
-//        var kfAnimation = new THREE.KeyFrameAnimation(thingScene.animations[i]);
-//        console.log(kfAnimation);
-//    }
-//}
 
 function initFileHandlers(){
     function handleAudioFileSelect(e) {
@@ -181,12 +170,17 @@ function initFileHandlers(){
     function handlePresetFileSelect(e) {
         importPreset(e.target.files[0]);
     }
+    function handleEventsFileSelect(e) {
+        importEvents(e.target.files[0]);
+    }
     document.getElementById('audio-file')
             .addEventListener('change', handleAudioFileSelect, false);
     document.getElementById('model-file')
             .addEventListener('change', handleModelFileSelect, false);
-	document.getElementById('thing-file')
-			.addEventListener('change', handleThingFileSelect, false);
+    document.getElementById('events-file')
+            .addEventListener('change', handleEventsFileSelect, false);
+    document.getElementById('thing-file')
+            .addEventListener('change', handleThingFileSelect, false);
     document.getElementById('preset-file')
             .addEventListener('change', handlePresetFileSelect, false);
     document.getElementById('export-button').onclick = exportPreset;
@@ -362,9 +356,12 @@ function animate() {
     //     animation.update( (time - prevTime)/3 );
     // }
     // prevTime = time;
-    for(key in things){
-        things[key].updateAnimation();
+    if(audio){
+        for(key in things){
+            things[key].updateAnimation(audio.getTime());
+        }    
     }
+    
 }
 
 function render() {
@@ -379,16 +376,26 @@ function getThingByName(name){
     return things[name];
 }
 
-var timeEvents = [
-    {
-        time: 3,
-        action: function(){
-            console.log("bliep " + this.time);
-            var objectName = "dezedoetut";
-            var morphTargetIndexes = [0,1];
-            var morphTime = 1;
-            getThingByName(objectName).morph(morphTargetIndexes, morphTime);
-        }
-    }
-];
+function morph(name, morphTargetIndex, toValue, duration){
+    // console.log("morph");
+    // console.log(getThingByName(name));
+    getThingByName(name).morph(morphTargetIndex, toValue, duration, audio.getTime());
+}
+
+// var timeEvents = [
+//     {
+//         time: 3.0,
+//         action: function(){
+//             morph("dezedoetut", 1, 1, 0.5); // arguments: (name, morphTargetIndex, toValue, duration)
+//         }
+//     },
+//     {
+//         time: 5.1,
+//         action: function(){
+//             morph("dezedoetut", 1, 0, 2.5); 
+//             morph("dezedoetut", 2, 1, 2.5); 
+
+//         }
+//     },
+// ];
 

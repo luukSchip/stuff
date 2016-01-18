@@ -2,45 +2,33 @@ var stuffThing = (function(){
 	return function(THREE) {
 		var prevTime = Date.now();
 		return {
+			name: undefined,
 			animations: [],
 			model: undefined,
-			mixer: undefined,
-			create: function(_model) {
+			create: function(_model, _name) {
 				var self = this;
 				self.model = _model;
-				// var animation = new THREE.MorphAnimation( _model );
-				//animation.play();
-				// self.animations.push(animation);
-
-
-				//console.log(self.mixer);
+				self.name = _name;
 				return self;
 			},
-			morph: function(morphTargetIndexes, duration){
+			morph: function(morphTargetIndex, toValue, duration, startTime){
 				var self = this;
-				var morphTargetSequence = [];
-				for(var i = 0; i < morphTargetIndexes.length; i++){
-					morphTargetSequence.push(self.model.geometry.morphTargets[morphTargetIndexes[i]]);
-				}
-				var clip = THREE.AnimationClip.CreateFromMorphTargetSequence( 'gallop', morphTargetSequence, 60 );
-				var animationAction = new THREE.AnimationAction( clip,0,1,1,THREE.LoopOnce ).warpToDuration( duration );
-				//animationAction.loop = THREE.LoopOnce;
-				if(!self.mixer){
-					prevTime = Date.now();
-					self.mixer = new THREE.AnimationMixer( self.model );
-				}
-				self.mixer.addAction(animationAction);
-				//self.mixer.fadeIn(animationAction,duration);
-				console.log(self);
+				var fromValue = self.model.morphTargetInfluences[morphTargetIndex];
+				self.animations.push({morphTargetIndex: morphTargetIndex, fromValue, toValue: toValue, duration: duration, startTime: startTime});
 			},
-			updateAnimation: function(){
-				var self = this;
-				if(self.mixer){
-					//console.log("updating anim");
-					var time = Date.now();
-					self.mixer.update( ( time - prevTime ) * 0.001);
-					
-					prevTime = time;
+			updateAnimation: function(time){
+				var self = this; 
+				for(var i = 0; i < self.animations.length; i++){
+					var animation = self.animations[0];
+					var progress = (time - animation.startTime) / animation.duration;
+					var influence = (progress * (animation.toValue - animation.fromValue)) + animation.fromValue;
+					//console.log(influence);
+					if(progress > 1 ){
+						self.animations.splice(i,1);
+						return;
+					}else{
+						self.model.morphTargetInfluences[animation.morphTargetIndex] = influence;
+					}
 				}
 			}
 		};

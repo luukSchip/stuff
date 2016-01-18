@@ -47,7 +47,8 @@ var stuffAudio = (function(){
 			if(timeEvents.length > 0){
 				var timeEvent = timeEvents[0];
 				if(time >= timeEvent.time){
-					console.log(time);
+					//console.log(time);
+					console.log(timeEvent.action);
 					timeEvent.action();
 					timeEvents.shift();
 				}
@@ -91,6 +92,9 @@ var stuffAudio = (function(){
 				self.clockInterval = interval;
 				clockActive = true;
 				return self;
+			},
+			getTime: function(){
+				return audioCtx.currentTime - startTime;
 			}
 		}
 	}
