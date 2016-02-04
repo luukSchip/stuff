@@ -33,6 +33,7 @@
         .menu-container label{
             width: 120px;
             display: inline-block;
+            border-bottom: 1px solid white;
         }
 
         .menu-container .menu{
@@ -62,15 +63,18 @@
         <label for="model-file">model:</label>
         <input type="file" id="model-file"/>
         <br>
-        <label for="events-file">events:</label>
-        <input type="file" id="events-file"/>
-        <br>
         <label for="thing-file">thing:</label>
         <input type="file" id="thing-file"/>
         <br>
+        <label for="light-file">light:</label>
+        <input type="file" id="light-file"/>
+        <br>
         <label for="audio-file">audio:</label>
         <input type="file" id="audio-file"/>
-        <br>
+        <hr>
+        <label for="events-file">events:</label>
+        <input type="file" id="events-file"/>
+        <hr>
         <label for="preset-file">import preset:</label>
         <input type="file" id="preset-file"/>
         <br>
@@ -95,9 +99,11 @@
 <script src="../js/libs/stats.min.js"></script>
 <script src='../js/libs/dat.gui.min.js'></script>
 <script src='../js/libs/tween.min.js'></script>
+<script src='../js/libs/tweenjs-0.6.2.min.js'></script>
 
 <script src="js/stuff/stuffObject.js"></script>
 <script src="js/stuff/stuffThing.js"></script>
+<script src="js/stuff/stuffLight.js"></script>
 <script src="js/stuff/stuffAudio.js"></script>
 <script src="js/stuff/helpers.js"></script>
 <script src="js/stuff/stuff.js"></script>

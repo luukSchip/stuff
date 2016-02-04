@@ -143,7 +143,7 @@ THREE.KeyFrameAnimation.prototype = {
 
 		//
 
-		var duration = this.data.length;
+		var duration = this.data.length * 2;
 
 		if ( this.loop === true && this.currentTime > duration ) {
 

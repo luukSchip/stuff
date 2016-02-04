@@ -8,11 +8,11 @@ THREE.MorphAnimation = function ( mesh ) {
 	this.mesh = mesh;
 	this.frames = mesh.morphTargetInfluences.length;
 	this.currentTime = 0;
-	this.duration = 1000;
+	this.fps = 24;
+	this.duration = parseFloat(this.frames) / parseFloat(this.fps);
 	this.loop = true;
 	this.lastFrame = 0;
 	this.currentFrame = 0;
-
 	this.isPlaying = false;
 
 };
@@ -44,6 +44,14 @@ THREE.MorphAnimation.prototype = {
 			this.currentTime %= this.duration;
 
 		}
+
+		if( this.loop === false && this.currentTime > this.duration) {
+			this.mesh.material.transparent = true;
+			this.mesh.material.opacity = 0;
+			this.pause();
+			return;
+		}
+
 
 		this.currentTime = Math.min( this.currentTime, this.duration );
 

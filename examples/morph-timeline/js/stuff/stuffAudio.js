@@ -40,6 +40,7 @@ var stuffAudio = (function(){
 			if(clockActive){
 				checkClock(self.clockInterval);
 			}
+			this.playing = true;
 		};
 		var checkClock = function(interval){
 			var self = this;

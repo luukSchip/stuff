@@ -14,11 +14,14 @@ var people = [];
 var gui;
 var audioLevels = [];
 var things = {};
+var lights = {};
 var attributes = {
     camRotationX: 0.3,
     camRotationY: 0.07
 };
 var animations = [];
+var timeEvents = [];
+var clock = new THREE.Clock();
 
 window.onload = function() {
 	init();
@@ -45,10 +48,10 @@ function initMouseHandlers(){
         yRotationFactor = 0.5 - (parseFloat(oMsEvent2.clientX) / parseFloat(window.innerWidth));
         xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
     };
-    window.addWheelListener(document.body,function(e){
-        //console.log(e.deltaY);
-        zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
-    },false);
+    // window.addWheelListener(document.body,function(e){
+    //     //console.log(e.deltaY);
+    //     zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
+    // },false);
 }
 
 function exportPreset(e){
@@ -121,20 +124,21 @@ function initGui(){
 
 }
 
-function loadThings(name,path){
-    loader = new THREE.JSONLoader();
-	loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
-}
-
 function loadModels(path){
     var loader = new THREE.ColladaLoader();
     loader.load( path , function ( collada ) {
+        console.log(collada);
         scene.add(collada.scene);
         for(var i = 0; i < collada.scene.children[0].children.length; i++){
             console.log(collada.scene.children[0].children.length);
             stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
         }
     });
+}
+
+function loadThings(name,path){
+    loader = new THREE.JSONLoader();
+    loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
 }
 
 function addThing(name,geometry,materials){
@@ -152,10 +156,33 @@ function addThing(name,geometry,materials){
 
     model = new THREE.Mesh( geometry, material );
     scene.add( model );
-
     things[name] = stuffThing(THREE).create(model, name);
-    
+}
 
+function loadLight(name,path){
+    loader = new THREE.ColladaLoader();
+    loader.load( path, function(collada){addLight(name,collada)});
+}
+
+function addLight(name,collada){
+    console.log({name:name, collada:collada});
+    scene.add( collada.scene );
+    for(var i = 0; i < collada.animations.length; i++){
+        console.log(collada.animations[i]);
+        var kfAnimation = new THREE.KeyFrameAnimation(collada.animations[i]);
+        kfAnimation.timeScale = 1;
+        //kfAnimation.loop = false;
+        kfAnimation.play(0);
+        animations.push(kfAnimation);
+    }
+    var count = 0;
+    collada.scene.traverse(function(a){
+        if(a instanceof THREE.Mesh){
+            if(count++ < 1){
+                lights[name] = stuffLight(THREE).create(a, name);
+            }
+        }
+    });
 }
 
 function initFileHandlers(){
@@ -165,9 +192,12 @@ function initFileHandlers(){
     function handleModelFileSelect(e) {
         loadModels(URL.createObjectURL(e.target.files[0]),true);
     }
-	function handleThingFileSelect(e) {
-		loadThings(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
-	}
+    function handleThingFileSelect(e) {
+        loadThings(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
+    }
+    function handleLightFileSelect(e) {
+        loadLight(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
+    }
     function handlePresetFileSelect(e) {
         importPreset(e.target.files[0]);
     }
@@ -182,6 +212,8 @@ function initFileHandlers(){
             .addEventListener('change', handleEventsFileSelect, false);
     document.getElementById('thing-file')
             .addEventListener('change', handleThingFileSelect, false);
+    document.getElementById('light-file')
+            .addEventListener('change', handleLightFileSelect, false);
     document.getElementById('preset-file')
             .addEventListener('change', handlePresetFileSelect, false);
     document.getElementById('export-button').onclick = exportPreset;
@@ -193,7 +225,7 @@ function initScene(){
 
     orbitBox = new THREE.Object3D()
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera = new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.set( 2, 2, zPosition );
     orbitBox.add(camera);
 
@@ -201,12 +233,12 @@ function initScene(){
 
     scene.add(orbitBox);
 
-    particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+    particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x333333 } ) );
     scene.add( particleLight );
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff );
+    var directionalLight = new THREE.DirectionalLight(0x333333 );
     directionalLight.position.x = 800;
     directionalLight.position.y = 30;
     directionalLight.position.z = -50;
@@ -221,6 +253,8 @@ function initScene(){
     renderer = new THREE.WebGLRenderer({antialiasing: true });
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
+
+
     container.appendChild( renderer.domElement );
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -229,6 +263,7 @@ function initScene(){
 
 function initAudio(filenames,absolute){
     audio = stuffAudio(filenames,absolute).init().clock(100,timeEvents);
+    prevTime = audio.getTime();
 }
 
 function onWindowResize() {
@@ -341,7 +376,7 @@ function analyzeAudio(){
 }
 
 
-//var prevTime = Date.now();
+var prevTime;
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -351,16 +386,15 @@ function animate() {
     if(stats){
         stats.update();
     }
-    // var time = Date.now();
-    // for(var i = 0; i < animations.length; i++){
-    //     var animation = animations[i];
-    //     animation.update( (time - prevTime)/3 );
-    // }
-    // prevTime = time;
     if(audio){
+        var currentTime = audio.getTime();
         for(key in things){
-            things[key].updateAnimation(audio.getTime());
+            things[key].updateAnimation(currentTime);
         }    
+        for(key in animations){
+            animations[key].update(clock.getDelta());
+        }
+        prevTime = currentTime;
     }
     
 }
@@ -377,10 +411,10 @@ function getThingByName(name){
     return things[name];
 }
 
-function morph(name, morphTargetIndex, toValue, duration){
+function morph(name, morphTargetIndex, duration){
     // console.log("morph");
     // console.log(getThingByName(name));
-    getThingByName(name).morph(morphTargetIndex, toValue, duration, audio.getTime());
+    getThingByName(name).morph(morphTargetIndex, 1, duration, audio.getTime());
 }
 
 // var timeEvents = [
