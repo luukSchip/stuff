@@ -151,6 +151,8 @@ function addThing(name,geometry,materials){
     }
 
     model = new THREE.Mesh( geometry, material );
+    model.castShadow = true;
+    model.receiveShadow = true;
     scene.add( model );
 
     things[name] = stuffThing(THREE).create(model, name);
@@ -198,27 +200,30 @@ function initScene(){
     orbitBox.add(camera);
 
     scene = new THREE.Scene();
-
     scene.add(orbitBox);
+    // RENDERER
+    if ( Detector.webgl )
+        renderer = new THREE.WebGLRenderer( {antialias:true} );
+    else
+        renderer = new THREE.CanvasRenderer(); 
 
-    particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
-    scene.add( particleLight );
 
-    // Lights
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff );
-    directionalLight.position.x = 800;
-    directionalLight.position.y = 30;
-    directionalLight.position.z = -50;
-    scene.add( directionalLight );
 
-    var pointLight = new THREE.PointLight( 0xffffff, 0.5 );
-    particleLight.add( pointLight );
-    particleLight.position.x = -100;
-    particleLight.position.y = 100;
-    particleLight.position.z = 0;
 
-    renderer = new THREE.WebGLRenderer({antialiasing: true });
+
+
+
+
+
+    //initPointLightScene();
+
+
+
+
+
+
+
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
@@ -226,6 +231,78 @@ function initScene(){
     window.addEventListener( 'resize', onWindowResize, false );
     animate();
 };
+
+
+function initPointLightScene(){
+    // must enable shadows on the renderer 
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMap.enabled = true;
+    
+    // "shadow cameras" show the light source and direction
+    
+    // spotlight #1 -- yellow, dark shadow
+    spotlight = new THREE.SpotLight(0xffff00);
+    spotlight.position.set(-60,150,-30);
+    spotlight.shadowCameraVisible = true;
+    spotlight.shadowDarkness = 0.95;
+    spotlight.intensity = 2;
+    // must enable shadow casting ability for the light
+    spotlight.castShadow = true;
+    var spotLightHelper = new THREE.SpotLightHelper( spotlight ); 
+    scene.add( spotLightHelper );
+    scene.add(spotlight);
+
+    // spotlight #2 -- red, light shadow
+    var spotlight2 = new THREE.SpotLight(0xff0000);
+    spotlight2.position.set(60,150,-60);
+    var spotLightHelper2 = new THREE.SpotLightHelper( spotlight2 ); 
+    //scene.add( spotLightHelper2 );
+    //scene.add(spotlight2);
+    spotlight2.shadowCameraVisible = true;
+    spotlight2.shadowDarkness = 0.70;
+    spotlight2.intensity = 2;
+    spotlight2.castShadow = true;
+    
+    // spotlight #3
+    var spotlight3 = new THREE.SpotLight(0x0000ff);
+    spotlight3.position.set(150,80,-100);
+    spotlight3.shadowCameraVisible = true;
+    spotlight3.shadowDarkness = 0.95;
+    spotlight3.intensity = 2;
+    spotlight3.castShadow = true;
+    var spotLightHelper3 = new THREE.SpotLightHelper( spotlight3 ); 
+    //scene.add( spotLightHelper3 );
+    //scene.add(spotlight3);
+    // change the direction this spotlight is facing
+    var lightTarget = new THREE.Object3D();
+    lightTarget.position.set(150,10,-100);
+    scene.add(lightTarget);
+    spotlight3.target = lightTarget;
+
+    // cube: mesh to cast shadows
+    var cubeGeometry = new THREE.CubeGeometry( 50, 50, 50 );
+    var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x888888 } );
+    cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+    cube.position.set(0,50,0);
+    // Note that the mesh is flagged to cast shadows
+    cube.castShadow = true;
+    scene.add(cube);
+    
+    // floor: mesh to receive shadows
+    var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
+    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+    floorTexture.repeat.set( 10, 10 );
+    // Note the change to Lambert material.
+    var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+    var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
+    floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.position.y = -0.5;
+    floor.rotation.x = Math.PI / 2;
+    // Note the mesh is flagged to receive shadows
+    floor.receiveShadow = true;
+    scene.add(floor);
+}
+
 
 function initAudio(filenames,absolute){
     audio = stuffAudio(filenames,absolute).init().clock(100,timeEvents);
