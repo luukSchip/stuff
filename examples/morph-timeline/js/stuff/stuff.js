@@ -160,6 +160,7 @@ function addThing(name,geometry,materials){
     scene.add( model );
 
     things[name] = stuffThing(THREE).create(model, name);
+}
     
 function loadLight(name,path){
     loader = new THREE.ColladaLoader();
