@@ -155,8 +155,8 @@ function addThing(name,geometry,materials){
     }
 
     model = new THREE.Mesh( geometry, material );
-    model.castShadow = true;
-    model.receiveShadow = true;
+    //model.castShadow = true;
+    //model.receiveShadow = true;
     scene.add( model );
 
     things[name] = stuffThing(THREE).create(model, name);
