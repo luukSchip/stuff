@@ -2,7 +2,7 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-var thingFilenames = ['wall.json','ground.json', 'STUFFs.json'];
+var thingFilenames = ['wall.json','ground.json','STUFFs.json','DRUM3.json'];
 var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['group.dae'];
