@@ -2,6 +2,11 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
+var thingFilenames = ['wall.json','ground.json', 'STUFFs.json'];
+var audioFilenames = ['3 of 4.mp3'];
+var eventFilenames = ['events-drum.js'];
+var modelFilenames = ['group.dae'];
+
 var yRotationFactor = 1;
 var xRotation = 0;
 var zPosition = 10.0;
@@ -40,7 +45,66 @@ function init() {
 	initScene();
     initMouseHandlers();
     initStats();
+    initFiles();
 }
+
+function initFiles(){
+    doOperationsAndThen(thingFilenames, loadThingFile, function(){
+        doOperationsAndThen(modelFilenames, loadModelFile, function(){
+            doOperationsAndThen(eventFilenames, loadEventFile,function(){
+                var playButton = document.getElementById("playButton");
+                playButton.innerHTML = "Play";
+                playButton.onclick = play;
+            });
+        });
+    });
+}
+
+function play(){
+    document.getElementById('playButtonContainer').style.display = "none";
+    initAudio(audioFilenames,false);
+}
+
+function loadThingFile(filename, callback){
+    loadThings(filename,'objects/things/'+filename);
+    callback();
+}
+
+function loadModelFile(filename, callback){
+    loadModels('objects/models/'+filename);
+    callback();
+}
+
+function loadEventFile(filename, callback){
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener('load', function(e){
+        var scriptString = e.target.responseText;
+        appendScriptToDocument(scriptString);
+        callback();
+    });
+    oReq.open("get", 'objects/events/'+filename, true);
+    oReq.send();
+}
+
+function checkIfOperationsAreDoneAndThen(numberOfOperationsToPerform, callback) {
+  var performedOperations = 0;
+  return function() {
+    performedOperations++;
+    if(performedOperations === numberOfOperationsToPerform) {
+      callback();
+    }
+  }
+}
+
+function doOperationsAndThen(values, recurringOperation, finalOperation) {
+  var checkIfOperationsAreDoneAndThenDoFinalOperation = 
+        checkIfOperationsAreDoneAndThen(values.length, finalOperation);
+  
+  for(var i = 0; i < values.length; i++) {
+    recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+  }
+}
+
 
 function initMouseHandlers(){
     document.onmousemove = function (oPssEvt2) {
@@ -93,14 +157,17 @@ function importEvents(eventsFile){
     var reader = new FileReader();
     reader.onload = (function(theFile) {
         return function(e) {
-            console.log(e)
             var eventsString = e.target.result;
-            var scrpt = document.createElement('script');
-            scrpt.innerHTML=eventsString;
-            document.head.appendChild(scrpt);
+            appendScriptToDocument(eventsString);
         };
     })(eventsFile);
     reader.readAsBinaryString(eventsFile);
+}
+
+function appendScriptToDocument(scriptString){
+    var scrpt = document.createElement('script');
+    scrpt.innerHTML=scriptString;
+    document.head.appendChild(scrpt);
 }
 
 function initGui(){
