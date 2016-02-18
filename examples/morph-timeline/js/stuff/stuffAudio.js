@@ -49,7 +49,7 @@ var stuffAudio = (function(){
 				var timeEvent = timeEvents[0];
 				if(time >= timeEvent.time){
 					//console.log(time);
-					console.log(timeEvent.action);
+					//console.log(timeEvent.action);
 					timeEvent.action();
 					timeEvents.shift();
 				}

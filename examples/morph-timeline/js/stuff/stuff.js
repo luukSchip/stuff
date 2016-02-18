@@ -577,7 +577,12 @@ function getThingByName(name){
 function morph(name, morphTargetIndex, duration){
     // console.log("morph");
     // console.log(getThingByName(name));
-    getThingByName(name).morph(morphTargetIndex, 1, duration, audio.getTime());
+    var thing = getThingByName(name);
+    thing.morph(morphTargetIndex, 1, duration, audio.getTime());
+    for(var i = 0; i < thing.clones.length; i++){
+        var clone = thing.clones[i];
+        clone.morph(morphTargetIndex, 1, duration, audio.getTime());
+    }
 }
 
 // var timeEvents = [

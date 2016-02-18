@@ -6,6 +6,7 @@ var stuffThing = (function(){
 			name: undefined,
 			animations: [],
 			model: undefined,
+			clones:[],
 			create: function(_model, _name) {
 				var self = this;
 				self.model = _model;

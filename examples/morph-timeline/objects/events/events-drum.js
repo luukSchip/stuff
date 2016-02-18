@@ -9,11 +9,30 @@ function randomPosition(object) {
     objectPosition.z = Math.sin(anglePoint)*10*distancePoint+3;
     objectPosition.y = Math.random()*10;
 }
+function scatter(thing,amountOfClones,radius){
+    for(var i = 0; i < amountOfClones; i++){
+        var thingClone = JSON.parse(JSON.stringify(thing));
+        var modelClone = thingClone.model;
+
+        var anglePoint = Math.random()*Math.PI*2;
+        var distancePoint = Math.random();
+
+        var cloneX = Math.cos(anglePoint)*(radius.x*distancePoint+3);
+        var cloneZ = Math.sin(anglePoint)*(radius.z*distancePoint+3);
+        var cloneY = Math.random()*radius.y;
+
+        modelClone.position.set(cloneX,cloneY,cloneZ);
+        thing.clones.push(thingClone);
+        scene.add(modelClone);
+    }
+}
+
 
 var timeEvents = [
     {
         time: 8.04,
         action: function(){
+            scatter(things["DRUM3.json"],100,{x:1,y:1,z:1});
             randomPosition(things["DRUM3.json"].model);
             //frame1:
             morph("DRUM3.json", 1, 0.02);
