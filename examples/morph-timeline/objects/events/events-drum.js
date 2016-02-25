@@ -51,12 +51,11 @@ var timeEvents = [
                 console.log(event);
      }}},
 
-    { time: 2, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:3}, 1000)
-        .addEventListener("change", handleChange);
-             function handleChange(event) {
-                console.log('moon scale changed..');
-                console.log(event);
-     }}},
+    
+    { time: 39.45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 200)}},
+    { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1})}},
+    { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 200)}},
+    { time: 40, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1})}},
 
 
     {
@@ -84,7 +83,7 @@ var timeEvents = [
     },
     
 
-    { time: 15.0, action: function(){morph("ripple.json", 1, 2);}} 
+    { time: 25.0, action: function(){morph("ripple.json", 1, 2);}} 
     
 
 
