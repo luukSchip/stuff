@@ -10,7 +10,6 @@
         "wireframe": false,
         "DbgName": "Material.000",
         "visible": true,
-        "colorSpecular": [0.5,0.5,0.5],
         "blending": "NormalBlending",
         "specularCoef": 50,
         "vertexColors": false,

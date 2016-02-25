@@ -51,11 +51,7 @@ var timeEvents = [
                 console.log(event);
      }}},
 
-    
-    { time: 39.45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 200)}},
-    { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1})}},
-    { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 200)}},
-    { time: 40, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1})}},
+  
 
 
     {
@@ -81,9 +77,16 @@ var timeEvents = [
             morph("DRUM3.json", 0, 0.5);
         }
     },
+
+    { time: 10.0, action: function(){morph("ripple.json", 1, 2);}},
     
 
-    { time: 25.0, action: function(){morph("ripple.json", 1, 2);}} 
+    
+
+    { time: 39.45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+     { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}},
+     { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 100)}},
+     { time: 40.0, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}} 
     
 
 
