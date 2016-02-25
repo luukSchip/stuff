@@ -2,7 +2,7 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-var thingFilenames = ['wall.json','ground.json','ripple.json','rain.json','DRUM3.json','moonground.json'];
+var thingFilenames = ['wall.json','ground.json','ripple.json','rain.json','DRUM3.json','moonground2.json'];
 var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['groep.dae'];
@@ -51,6 +51,8 @@ function init() {
 function initFiles(){
     doOperationsAndThen(thingFilenames, loadThingFile, function(){
         //doOperationsAndThen(modelFilenames, loadModelFile, function(){
+            console.log('yo');
+            console.log(JSON.stringify(things));
             doOperationsAndThen(eventFilenames, loadEventFile,function(){
                 var playButton = document.getElementById("playButton");
                 playButton.innerHTML = "Play";

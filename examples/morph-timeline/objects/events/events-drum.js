@@ -27,10 +27,26 @@ function scatter(thing,amountOfClones,radius){
     }
 }
 
+things["moonground2.json"].model.position.y=3;
+
 
 var timeEvents = [
 
-    { time: 1, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000)}},
+    { time: 1, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000)
+        .addEventListener("change", handleChange);
+             function handleChange(event) {
+                console.log('rain opacity changed..');
+                console.log(event);
+     }}},
+
+    { time: 2, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:3}, 1000)
+        .addEventListener("change", handleChange);
+             function handleChange(event) {
+                console.log('moon scale changed..');
+                console.log(event);
+     }}},
+
+
     {
         time: 8.06,
         action: function(){
