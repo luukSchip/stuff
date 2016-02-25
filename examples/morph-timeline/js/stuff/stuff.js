@@ -2,10 +2,12 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-var thingFilenames = ['wall.json','ground.json','STUFFs.json','DRUM3.json'];
-var audioFilenames = ['3 of 4.mp3'];
+var thingFilenames = ['wall.json','ground.json','ripple2.json','rain.json','DRUM3.json','moonground2.json'];
+var audioFilenames = ['silence.mp3'];
 var eventFilenames = ['events-drum.js'];
-var modelFilenames = ['group.dae'];
+var modelFilenames = [];
+
+var animationCallbacks = []
 
 var yRotationFactor = 1;
 var xRotation = 0;
@@ -66,13 +68,11 @@ function play(){
 }
 
 function loadThingFile(filename, callback){
-    loadThings(filename,'objects/things/'+filename);
-    callback();
+    loadThings(filename,'objects/things/'+filename, callback);
 }
 
 function loadModelFile(filename, callback){
-    loadModels('objects/models/'+filename);
-    callback();
+    loadModels('objects/models/'+filename, callback);
 }
 
 function loadEventFile(filename, callback){
@@ -99,9 +99,12 @@ function checkIfOperationsAreDoneAndThen(numberOfOperationsToPerform, callback) 
 function doOperationsAndThen(values, recurringOperation, finalOperation) {
   var checkIfOperationsAreDoneAndThenDoFinalOperation = 
         checkIfOperationsAreDoneAndThen(values.length, finalOperation);
-  
-  for(var i = 0; i < values.length; i++) {
-    recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+  if(values.length > 0){
+      for(var i = 0; i < values.length; i++) {
+        recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+      }
+  }else{
+    finalOperation();
   }
 }
 
@@ -112,10 +115,10 @@ function initMouseHandlers(){
         yRotationFactor = 0.5 - (parseFloat(oMsEvent2.clientX) / parseFloat(window.innerWidth));
         xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
     };
-    window.addWheelListener(document.body,function(e){
-        //console.log(e.deltaY);
-        zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
-    },false);
+    // window.addWheelListener(document.body,function(e){
+    //     //console.log(e.deltaY);
+    //     zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
+    // },false);
 }
 
 function exportPreset(e){
@@ -191,12 +194,15 @@ function initGui(){
 
 }
 
-function loadThings(name,path){
+function loadThings(name,path,callback){
     loader = new THREE.JSONLoader();
-	loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
+	loader.load( path, function(geometry,materials){
+        addThing(name,geometry,materials);
+        callback();
+    });
 }
 
-function loadModels(path){
+function loadModels(path,callback){
     var loader = new THREE.ColladaLoader();
     loader.load( path , function ( collada ) {
         console.log(collada);
@@ -205,6 +211,7 @@ function loadModels(path){
             console.log(collada.scene.children[0].children.length);
             stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
         }
+        callback();
     });
 }
 
@@ -226,7 +233,7 @@ function addThing(name,geometry,materials){
     //model.receiveShadow = true;
     scene.add( model );
 
-    things[name] = stuffThing(THREE).create(model, name);
+    things[name] = stuffThing(THREE,model,name);
 }
     
 function loadLight(name,path){
@@ -295,7 +302,7 @@ function initScene(){
 
     orbitBox = new THREE.Object3D()
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera = new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.set( 2, 2, zPosition );
     orbitBox.add(camera);
 
@@ -551,8 +558,14 @@ function animate() {
     // prevTime = time;
     if(audio){
         var currentTime = audio.getTime();
+        $('#timeIndicator').html(currentTime);
         for(key in things){
-            things[key].updateAnimation(currentTime);
+            var thing = things[key];
+            thing.updateAnimation(currentTime);
+            for(var i = 0; i < thing.clones.length; i++){
+                var clone = thing.clones[i];
+                clone.updateAnimation(currentTime);
+            }
         }    
         for(key in animations){
             animations[key].update(clock.getDelta());
@@ -560,6 +573,10 @@ function animate() {
         prevTime = currentTime;
     }
     
+    for(var i = 0; i < animationCallbacks.length; i++){
+        var callback = animationCallbacks[i];
+        callback();
+    }
 }
 
 function render() {

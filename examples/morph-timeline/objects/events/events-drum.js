@@ -1,17 +1,29 @@
 
-function randomPosition(object) {
-    var objectPosition = object.position;
+function randomPosition(thing) {
 
-    var anglePoint = Math.random()*Math.PI*2;
-    var distancePoint = Math.random();
-    
-    objectPosition.x = Math.cos(anglePoint)*10*distancePoint+3;
-    objectPosition.z = Math.sin(anglePoint)*10*distancePoint+3;
-    objectPosition.y = Math.random()*10;
+    reposition(thing.model);
+    for(var i = 0; i < thing.clones.length; i++){
+        var model = thing.clones[i].model;
+        reposition(model);
+    }
+
+    function reposition(object){
+        var objectPosition = object.position;
+
+        var anglePoint = Math.random()*Math.PI*2;
+        var distancePoint = Math.random();
+        
+        objectPosition.x = Math.cos(anglePoint)*10*distancePoint+3;
+        objectPosition.z = Math.sin(anglePoint)*10*distancePoint+3;
+        objectPosition.y = Math.random()*10;
+    }
 }
+
+
 function scatter(thing,amountOfClones,radius){
     for(var i = 0; i < amountOfClones; i++){
-        var modelClone = thing.model.clone();
+        var thingClone = thing.clone();
+        var modelClone = thingClone.model;
 
         var anglePoint = Math.random()*Math.PI*2;
         var distancePoint = Math.random();
@@ -26,8 +38,50 @@ function scatter(thing,amountOfClones,radius){
     }
 }
 
+function cloneOnCircle(thing,amountOfClones,center,radius,callback){
+    for(var i = 0; i < amountOfClones; i++){
+        var thingClone = thing.clone();
+        var modelClone = thingClone.model;
+
+        var anglePoint = (Math.PI*2) / amountOfClones * i;
+
+        var cloneX = center.x + Math.cos(anglePoint)*(radius.x);
+        var cloneZ = center.z + Math.sin(anglePoint)*(radius.z);
+        var cloneY = center.y;
+
+        modelClone.position.set(cloneX,cloneY,cloneZ);
+        thing.clones.push(thingClone);
+        callback(modelClone,i);
+        scene.add(modelClone);
+    }
+}
+
+function clone(thing, amountOfClones, callback){
+     for(var i = 0; i < amountOfClones; i++){
+        var thingClone = thing.clone();
+        var modelClone = thingClone.model;
+        thing.clones.push(thingClone);
+        callback(modelClone,i);
+        scene.add(modelClone);
+    }
+}
+
+things["moonground2.json"].model.position.y=8;
+things["moonground2.json"].model.scale.y=0.01;
+
 
 var timeEvents = [
+
+    { time: 1, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000)
+        .addEventListener("change", handleChange);
+             function handleChange(event) {
+                console.log('rain opacity changed..');
+                console.log(event);
+     }}},
+
+  
+
+
     {
         time: 8.04,
         action: function(){
@@ -48,304 +102,37 @@ var timeEvents = [
         {
         time: 8.48,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            //scatter(things["STUFFs.json"],10,{x:1,y:1,z:1});
+        }
+    },
+    {
+        time: 8.04,
+        action: function(){
+            scatter(things["DRUM3.json"],10,{x:1,y:1,z:1});
+            randomPosition(things["DRUM3.json"]);
             //frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 8.50,
-        action: function(){
-            
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 8.68,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            //frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 8.70,
-        action: function(){
-            
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 8.80,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            //frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 8.82,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 8.88,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 8.90,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 9.36,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 9.38,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 9.56,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 9.58,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 9.76,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 9.78,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 10.20,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 10.22,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 10.64,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 10.66,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 11.12,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 11.14,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 11.56,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 11.58,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.02);
-        }
-    },
-            {
-        time: 12.00,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 12.02,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 12.40,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 12.42,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 12.84,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 12.86,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 13.20,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 13.22,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },    
-            {
-        time: 13.28,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 13.30,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 13.68,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 13.70,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 14.16,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 14.18,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 14.60,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 14.62,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.30);
-        }
-    },
-            {
-        time: 14.88,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
-            morph("DRUM3.json", 1, 0.02);
-        }
-    },
-                {
-        time: 14.90,
-        action: function(){
-            //frame1:
-            morph("DRUM3.json", 0, 0.02);
-        }
-    },
-            {
-        time: 14.92,
-        action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
     {
-        time: 20,
+        time: 8.06,
         action: function(){
-            createjs.Tween.get(things["DRUM3.json"].model.material).to({opacity:0}, 2000)
+            
+            //frame1:
+            morph("DRUM3.json", 0, 0.5);
         }
-    }
+    },
 
+    { time: 10.0, action: function(){morph("ripple2.json", 1, 2);}},
     
- 
+
+    /*
+
+    { time: .45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+     { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}},
+     { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 100)}},
+     { time: 40.0, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}} 
+    */
 
 
 ];

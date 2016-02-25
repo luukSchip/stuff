@@ -79,6 +79,13 @@
         #playButton:hover {
             font-size: 6em;
         }
+
+        #timeIndicator {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            color: white;
+        }
     </style>
     <script type="text/javascript" src="../js/libs/jquery-2.1.4.min.js"></script>
 </head>
@@ -111,6 +118,8 @@
         <a href="" id="export-button" download>export</a>
     </div>
 </div>
+
+<div id="timeIndicator"></div>
 
 <div id="playButtonContainer">
     <span id="playButton">Loading..</span>
