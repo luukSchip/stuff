@@ -8,34 +8,13 @@ functions you can use
 
 clones Things and positions them on a circle
 
---------------	---------------------
-argument  		description
---------------	---------------------
-thing       	Thing (not the name
-				but the actual 
-				object)
-
-amountOfClones  How many times the 
-				thing will be cloned
-
-center       	JS object that has 
-				the coordinates of the
-				center of the circle.
-				{x:number,y:number,
-				z:number}
-
-radius       	JS object that has 
-				the radius of the 
-				circle for axes x 
-				and z.
-				{x:number, z:number}
-
-callback     	function that will be
-				called for each created
-				clone.
-				callback arguments:
-				model, index
---------------	----------------------
+| argument       	| description                                                                                   	|
+|----------------	|-----------------------------------------------------------------------------------------------	|
+| thing          	| How many times the thing will be cloned                                                       	|
+| amountOfClones 	| How many times the Thing will be cloned                                                       	|
+| center         	| JS object that has the coordinates of the center of the circle. {x:number,y:number, z:number} 	|
+| radius         	| JS object that has the radius of the circle for axes x and z. {x:number, z:number}            	|
+| callback       	| function that will be called for each created clone. callback arguments: model, index         	|
 
 example:
 ~~~
