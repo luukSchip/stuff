@@ -3,9 +3,11 @@
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 var thingFilenames = ['wall.json','ground.json','ripple2.json','rain.json','DRUM3.json','moonground2.json'];
-var audioFilenames = ['3 of 4.mp3'];
+var audioFilenames = ['silence.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = [];
+
+var animationCallbacks = []
 
 var yRotationFactor = 1;
 var xRotation = 0;
@@ -571,6 +573,10 @@ function animate() {
         prevTime = currentTime;
     }
     
+    for(var i = 0; i < animationCallbacks.length; i++){
+        var callback = animationCallbacks[i];
+        callback();
+    }
 }
 
 function render() {

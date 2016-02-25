@@ -23,6 +23,7 @@
         "DbgIndex": 0,
         "colorAmbient": [0.64,0.64,0.64],
         "opacity": 0,
+        "doubleSided": true,
         "wireframe": false,
         "specularCoef": 50,
         "depthTest": true,
