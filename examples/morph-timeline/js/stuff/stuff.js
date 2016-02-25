@@ -2,10 +2,10 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-var thingFilenames = ['wall.json','ground.json','STUFFs.json','DRUM3.json'];
+var thingFilenames = ['wall.json','ground.json','ripple.json','rain.json','DRUM3.json','moonground.json'];
 var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
-var modelFilenames = ['group.dae'];
+var modelFilenames = ['groep.dae'];
 
 var yRotationFactor = 1;
 var xRotation = 0;
@@ -50,13 +50,13 @@ function init() {
 
 function initFiles(){
     doOperationsAndThen(thingFilenames, loadThingFile, function(){
-        doOperationsAndThen(modelFilenames, loadModelFile, function(){
+        //doOperationsAndThen(modelFilenames, loadModelFile, function(){
             doOperationsAndThen(eventFilenames, loadEventFile,function(){
                 var playButton = document.getElementById("playButton");
                 playButton.innerHTML = "Play";
                 playButton.onclick = play;
             });
-        });
+        //});
     });
 }
 
@@ -112,10 +112,10 @@ function initMouseHandlers(){
         yRotationFactor = 0.5 - (parseFloat(oMsEvent2.clientX) / parseFloat(window.innerWidth));
         xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
     };
-    window.addWheelListener(document.body,function(e){
-        //console.log(e.deltaY);
-        zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
-    },false);
+    // window.addWheelListener(document.body,function(e){
+    //     //console.log(e.deltaY);
+    //     zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
+    // },false);
 }
 
 function exportPreset(e){
@@ -295,7 +295,7 @@ function initScene(){
 
     orbitBox = new THREE.Object3D()
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera = new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.set( 2, 2, zPosition );
     orbitBox.add(camera);
 

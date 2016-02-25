@@ -25,7 +25,7 @@
         "DbgColor": 15658734,
         "visible": true,
         "vertexColors": false,
-        "shading": "phong",
+        "shading": "basic",
         "depthWrite": true,
         "opacity": 1,
         "depthTest": true,
