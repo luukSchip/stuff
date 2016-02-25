@@ -551,6 +551,7 @@ function animate() {
     // prevTime = time;
     if(audio){
         var currentTime = audio.getTime();
+        $('#timeIndicator').html(currentTime);
         for(key in things){
             things[key].updateAnimation(currentTime);
         }    
