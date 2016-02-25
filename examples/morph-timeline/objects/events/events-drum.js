@@ -38,7 +38,8 @@ function scatter(thing,amountOfClones,radius){
     }
 }
 
-things["moonground2.json"].model.position.y=3;
+things["moonground2.json"].model.position.y=8;
+things["moonground2.json"].model.scale.y=0.01;
 
 
 var timeEvents = [
