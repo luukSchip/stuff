@@ -66,13 +66,11 @@ function play(){
 }
 
 function loadThingFile(filename, callback){
-    loadThings(filename,'objects/things/'+filename);
-    callback();
+    loadThings(filename,'objects/things/'+filename, callback);
 }
 
 function loadModelFile(filename, callback){
-    loadModels('objects/models/'+filename);
-    callback();
+    loadModels('objects/models/'+filename, callback);
 }
 
 function loadEventFile(filename, callback){
@@ -99,9 +97,12 @@ function checkIfOperationsAreDoneAndThen(numberOfOperationsToPerform, callback) 
 function doOperationsAndThen(values, recurringOperation, finalOperation) {
   var checkIfOperationsAreDoneAndThenDoFinalOperation = 
         checkIfOperationsAreDoneAndThen(values.length, finalOperation);
-  
-  for(var i = 0; i < values.length; i++) {
-    recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+  if(values.length > 0){
+      for(var i = 0; i < values.length; i++) {
+        recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+      }
+  }else{
+    finalOperation();
   }
 }
 
@@ -191,12 +192,15 @@ function initGui(){
 
 }
 
-function loadThings(name,path){
+function loadThings(name,path,callback){
     loader = new THREE.JSONLoader();
-	loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
+	loader.load( path, function(geometry,materials){
+        addThing(name,geometry,materials);
+        callback();
+    });
 }
 
-function loadModels(path){
+function loadModels(path,callback){
     var loader = new THREE.ColladaLoader();
     loader.load( path , function ( collada ) {
         console.log(collada);
@@ -205,6 +209,7 @@ function loadModels(path){
             console.log(collada.scene.children[0].children.length);
             stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
         }
+        callback();
     });
 }
 
