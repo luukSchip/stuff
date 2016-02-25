@@ -226,7 +226,7 @@ function addThing(name,geometry,materials){
     //model.receiveShadow = true;
     scene.add( model );
 
-    things[name] = stuffThing(THREE).create(model, name);
+    things[name] = stuffThing(THREE,model,name);
 }
     
 function loadLight(name,path){
@@ -552,7 +552,12 @@ function animate() {
     if(audio){
         var currentTime = audio.getTime();
         for(key in things){
-            things[key].updateAnimation(currentTime);
+            var thing = things[key];
+            thing.updateAnimation(currentTime);
+            for(var i = 0; i < thing.clones.length; i++){
+                var clone = thing.clones[i];
+                clone.updateAnimation(currentTime);
+            }
         }    
         for(key in animations){
             animations[key].update(clock.getDelta());

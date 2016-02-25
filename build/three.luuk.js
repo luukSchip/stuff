@@ -8229,7 +8229,7 @@ THREE.Object3D.prototype = {
 
 	toJSON: function ( meta ) {
 
-		var isRootObject = ( meta === undefined );
+		var isRootObject = ( meta === undefined || meta == "model" );
 
 		var output = {};
 
@@ -14561,7 +14561,6 @@ THREE.Loader.prototype = {
 						json.side = THREE.BackSide;
 						break;
 					case 'doubleSided':
-						console.log("hier doublesided!");
 						json.side = THREE.DoubleSide;
 						break;
 					case 'transparency':
@@ -14584,10 +14583,8 @@ THREE.Loader.prototype = {
 					case 'base64Texture':
 						var image = document.createElement( 'img' );
 						var texture = new THREE.Texture( image );
-						texture.foo = "bar";
 						image.onload = function()  {
 						    texture.needsUpdate = true;
-						    texture.booboo = "kaka";
 						};
 						image.src = 'data:image/png;base64,'+value;
 						json.map = texture;

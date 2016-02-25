@@ -1,17 +1,28 @@
 
-function randomPosition(object) {
-    var objectPosition = object.position;
+function randomPosition(thing) {
 
-    var anglePoint = Math.random()*Math.PI*2;
-    var distancePoint = Math.random();
-    
-    objectPosition.x = Math.cos(anglePoint)*10*distancePoint+3;
-    objectPosition.z = Math.sin(anglePoint)*10*distancePoint+3;
-    objectPosition.y = Math.random()*10;
+    reposition(thing.model);
+    for(var i = 0; i < thing.clones.length; i++){
+        var model = thing.clones[i].model;
+        reposition(model);
+    }
+
+    function reposition(object){
+        var objectPosition = object.position;
+
+        var anglePoint = Math.random()*Math.PI*2;
+        var distancePoint = Math.random();
+        
+        objectPosition.x = Math.cos(anglePoint)*10*distancePoint+3;
+        objectPosition.z = Math.sin(anglePoint)*10*distancePoint+3;
+        objectPosition.y = Math.random()*10;
+    }
 }
+
+
 function scatter(thing,amountOfClones,radius){
     for(var i = 0; i < amountOfClones; i++){
-        var thingClone = JSON.parse(JSON.stringify(thing));
+        var thingClone = thing.clone();
         var modelClone = thingClone.model;
 
         var anglePoint = Math.random()*Math.PI*2;
@@ -30,10 +41,16 @@ function scatter(thing,amountOfClones,radius){
 
 var timeEvents = [
     {
+        time: 0.00,
+        action: function(){
+            //scatter(things["STUFFs.json"],10,{x:1,y:1,z:1});
+        }
+    },
+    {
         time: 8.04,
         action: function(){
-            scatter(things["DRUM3.json"],100,{x:1,y:1,z:1});
-            randomPosition(things["DRUM3.json"].model);
+            scatter(things["DRUM3.json"],10,{x:1,y:1,z:1});
+            randomPosition(things["DRUM3.json"]);
             //frame1:
             morph("DRUM3.json", 1, 0.02);
         }
@@ -49,7 +66,7 @@ var timeEvents = [
         {
         time: 8.48,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             //frame1:
             morph("DRUM3.json", 1, 0.02);
         }
@@ -65,7 +82,7 @@ var timeEvents = [
             {
         time: 8.68,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             //frame1:
             morph("DRUM3.json", 1, 0.02);
         }
@@ -81,7 +98,7 @@ var timeEvents = [
             {
         time: 8.80,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             //frame1:
             morph("DRUM3.json", 1, 0.02);
         }
@@ -96,7 +113,7 @@ var timeEvents = [
             {
         time: 8.88,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -110,7 +127,7 @@ var timeEvents = [
             {
         time: 9.36,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -124,7 +141,7 @@ var timeEvents = [
             {
         time: 9.56,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -138,7 +155,7 @@ var timeEvents = [
             {
         time: 9.76,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);
+            randomPosition(things["DRUM3.json"]);
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -152,7 +169,7 @@ var timeEvents = [
             {
         time: 10.20,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -166,7 +183,7 @@ var timeEvents = [
             {
         time: 10.64,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -180,7 +197,7 @@ var timeEvents = [
             {
         time: 11.12,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -194,7 +211,7 @@ var timeEvents = [
             {
         time: 11.56,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -208,7 +225,7 @@ var timeEvents = [
             {
         time: 12.00,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -222,7 +239,7 @@ var timeEvents = [
             {
         time: 12.40,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -236,7 +253,7 @@ var timeEvents = [
             {
         time: 12.84,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -250,7 +267,7 @@ var timeEvents = [
             {
         time: 13.20,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -264,7 +281,7 @@ var timeEvents = [
             {
         time: 13.28,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -278,7 +295,7 @@ var timeEvents = [
             {
         time: 13.68,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -292,7 +309,7 @@ var timeEvents = [
             {
         time: 14.16,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -306,7 +323,7 @@ var timeEvents = [
             {
         time: 14.60,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -320,7 +337,7 @@ var timeEvents = [
             {
         time: 14.88,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
@@ -334,7 +351,7 @@ var timeEvents = [
             {
         time: 14.92,
         action: function(){
-            randomPosition(things["DRUM3.json"].model);//frame1:
+            randomPosition(things["DRUM3.json"]);//frame1:
             morph("DRUM3.json", 1, 0.02);
         }
     },
