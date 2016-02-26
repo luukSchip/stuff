@@ -83,12 +83,36 @@ var timeEvents = [
 
     
 
-    { time: .45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
-     { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}},
-     { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 100)}},
-     { time: 40.0, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}} 
+    { time: 29.17, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 29.27, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 29.58, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 29.68, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 30.80, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 30.90, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}}, 
+    { time: 31.50, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 31.60, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 32.60, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 31.70, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 33.20, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 33.30, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 34.40, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 34.50, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 36.75, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 36.85, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 37.95, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 38.05, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 39.68, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 39.78, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 40.20, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 40.30, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 41.40, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 41.50, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}},
+    { time: 41.95, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+    { time: 42.05, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.01}, 250)}}  
     
 
 
 ];
+
+
 
