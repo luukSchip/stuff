@@ -1,4 +1,3 @@
-
 function randomPosition(thing) {
 
     reposition(thing.model);
@@ -33,7 +32,7 @@ function scatter(thing,amountOfClones,radius){
         var cloneY = Math.random()*radius.y;
 
         modelClone.position.set(cloneX,cloneY,cloneZ);
-        thing.clones.push(thingClone);
+        thing.clones.push(modelClone);
         scene.add(modelClone);
     }
 }
@@ -56,6 +55,16 @@ function cloneOnCircle(thing,amountOfClones,center,radius,callback){
     }
 }
 
+function clone(thing, amountOfClones, callback){
+     for(var i = 0; i < amountOfClones; i++){
+        var thingClone = thing.clone();
+        var modelClone = thingClone.model;
+        thing.clones.push(thingClone);
+        callback(modelClone,i);
+        scene.add(modelClone);
+    }
+}
+
 things["moonground2.json"].model.position.y=8;
 things["moonground2.json"].model.scale.y=0.01;
 cloneOnCircle(
@@ -69,9 +78,19 @@ cloneOnCircle(
 );
 
 
+
 var timeEvents = [
 
-
+    // { time: 1, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000)
+    //     .addEventListener("change", handleChange);
+    //          function handleChange(event) {
+    //             console.log('rain opacity changed..');
+    //             console.log(event);
+    //  }}},
+    
+    {time: 1.00, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000);
+                                     createjs.Tween.get(things["rain.json"].model.rotation).to({y:3},1000);
+                                     createjs.Tween.get(things["rain.json"].model.position).to({y:-2},1000);}},
 
 
     {time: 8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);}},
@@ -119,7 +138,6 @@ var timeEvents = [
     {time: 15.00, action: function(){morph("ripple2.json", 1, 3);}},
     {time: 15.52, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 15.54, action: function(){morph("DRUM3.json", 0, 0.3);}},
-    {time: 15.80, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000);}},
     {time: 15.88, action: function(){scatter(things["DRUM3.json"],3,{x:0,y:0,z:0});randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 15.90, action: function(){morph("DRUM3.json", 0, 0.45);}},
     {time: 16.36, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
@@ -127,7 +145,6 @@ var timeEvents = [
     {time: 16.72, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 16.74, action: function(){morph("DRUM3.json", 0, 0.05);}},
     {time: 16.80, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
-    {time: 16.81, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:0}, 1000);}},
     {time: 16.82, action: function(){morph("DRUM3.json", 0, 0.45);}},
     {time: 17.28, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 17.30, action: function(){morph("DRUM3.json", 0, 0.35);}},

@@ -5,7 +5,7 @@ if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 var thingFilenames = ['wall.json','ground.json','ripple2.json','rain.json','DRUM3.json','moonground2.json'];
 var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
-var modelFilenames = [];
+var modelFilenames = ['scramble.dae'];
 
 var yRotationFactor = 1;
 var xRotation = 0;
