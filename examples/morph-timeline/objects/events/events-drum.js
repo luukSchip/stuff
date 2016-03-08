@@ -5,7 +5,7 @@ function randomPosition(thing, radius, callback) {
         reposition(model,radius);
         if(callback){
             callback(model);
-	   }
+        }
     }
 }
 function scatter(thing,amountOfClones,radius,callback){
@@ -76,6 +76,8 @@ things["bassbell.json"].model.scale.set(0.2,0.2,0.2);
 scatter(things["bassbell.json"],4,{x:1,y:1,z:1});
 things["DRUM3.json"].model.scale.set(0.25,0.25,0.25);
 things["bassbell.json"].model.material.color.b=0;
+things["groundsea.json"].model.material.opacity=0;
+things["groundsea.json"].model.position.y=50;
 
 
 
@@ -264,23 +266,16 @@ var timeEvents = [
     {time: 29.17, action: function(){createjs.Tween.get(things["moonground.json"].model.scale).to({y:1}, 100)}},
     {time: 29.22, action: function(){createjs.Tween.get(things["rings.json"].model.material).to({opacity:0},500);}},
     {time: 29.27, action: function(){createjs.Tween.get(things["moonground.json"].model.scale).to({y:0.01}, 250)}}, 
-    {time: 29.36, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:1},0.12)}},   
     {time: 29.36, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     {time: 29.38, action: function(){morph("DRUM3.json", 0, 0.5);}},
-    {time: 29.48, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:0.7},0.12)}},  
     {time: 29.58, action: function(){createjs.Tween.get(things["moonground.json"].model.scale).to({y:1}, 100)}},
-    {time: 29.60, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:0},0.12)}},
     {time: 29.61, action: function(){createjs.Tween.get(things["bassbell.json"].model.material).to({opacity:0.9}, 1); randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2})}},
     {time: 29.68, action: function(){createjs.Tween.get(things["moonground.json"].model.scale).to({y:0.01}, 250)}},
-    {time: 29.72, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:1},0.12)}},
     {time: 29.73, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2})}},
-    {time: 29.84, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:0.7},0.12)}},
     {time: 29.86, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2})}},
-    {time: 29.96, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:1},0.12)}},
     {time: 29.99, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2}); createjs.Tween.get(things["bassbell.json"].model.material).to({opacity:0}, 200) }},
     {time: 30.00, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     {time: 30.02, action: function(){morph("DRUM3.json", 0, 0.2);}},
-    {time: 30.08, action: function(){createjs.Tween.get(things["bells.json"].model.material).to({opacity:0},0.12)}},  
     {time: 30.43, action: function(){morph("rings.json", 0, 0.01); createjs.Tween.get(things["rings.json"].model.material).to({opacity:1},500); morph("rings.json", 1, 1);}},
     {time: 30.44, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     {time: 30.46, action: function(){morph("DRUM3.json", 0, 0.1);}},            
@@ -433,6 +428,24 @@ var timeEvents = [
     {time: 42.30, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2})}},
     {time: 42.32, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     
+    {time: 42.43, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2}); }},
+    {time: 42.72, action: function(){createjs.Tween.get(things["rings.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+    createjs.Tween.get(things["bassbell.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+    createjs.Tween.get(things["DRUM3.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+    createjs.Tween.get(things["ripple2.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
+    createjs.Tween.get(things["moonground.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
+    var thing = things["DRUM3.json"]; 
+        for(var i = 0; i < thing.clones.length; i++){
+            var clone = thing.clones[i];
+            createjs.Tween.get(clone.model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+        };
+    thing = things["bassbell.json"];
+        for(var i = 0; i < thing.clones.length; i++){
+            var clone = thing.clones[i];
+            createjs.Tween.get(clone.model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+        };
+
+    }}
 
 
 ];
