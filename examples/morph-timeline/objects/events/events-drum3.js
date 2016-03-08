@@ -92,6 +92,16 @@ var timeEvents = [
                                      createjs.Tween.get(things["rain.json"].model.rotation).to({y:3},1000);
                                      createjs.Tween.get(things["rain.json"].model.position).to({y:-2},1000);}},
 
+     {time: 1.80, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 200);}},
+    {time: 2.00, action: function(){var thing = things["rain.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.position).to({y:8}, 1000);}}},
+    
+//draaien en naar beneden bewegen
+    {time: 16.00, action: function(){var thing = things["rain.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.position).to({y:-2}, 1000);}}},
+    {time: 16.00, action: function(){var thing = things["rain.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.rotation).to({y:2}, 1000);}}},
+    {time: 16.81, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:0}, 1000);}},
+//hierboven staat hoe je z positie kan aanpassen
+
+
 
     {time: 8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);}},
     {time: 8.06, action: function(){morph("DRUM3.json", 0, 0.4);}},
