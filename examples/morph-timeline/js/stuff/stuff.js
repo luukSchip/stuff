@@ -3,7 +3,7 @@
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
 var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json'];
-var audioFilenames = ['3 of 4.mp3'];
+var audioFilenames = ['silence.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
 
@@ -114,13 +114,13 @@ function initMouseHandlers(){
         xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
     };
     // window.addWheelListener(document.body,function(e){
-    //     //console.log(e.deltaY);
+    //     ////console.log(e.deltaY);
     //     zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
     // },false);
 }
 
 function exportPreset(e){
-    console.log(e);
+    //console.log(e);
     var attributesArray = [];
     for(var i = 0; i < people.length; i++){
         attributesArray.push(people[i].attributes);
@@ -140,7 +140,7 @@ function importPreset(presetFile){
         return function(e) {
             var presetString = e.target.result;
             var attributesArray = JSON.parse(presetString);
-            console.log(attributesArray);
+            //console.log(attributesArray);
             for(var i = 0; i < people.length; i++){
                 var person = people[i];
                 var presetAttributes = attributesArray[i];
@@ -203,10 +203,10 @@ function loadThings(name,path,callback){
 function loadModels(path,callback){
     var loader = new THREE.ColladaLoader();
     loader.load( path , function ( collada ) {
-        console.log(collada);
+        //console.log(collada);
         scene.add(collada.scene);
         for(var i = 0; i < collada.scene.children[0].children.length; i++){
-            console.log(collada.scene.children[0].children.length);
+            //console.log(collada.scene.children[0].children.length);
             stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
         }
         callback();
@@ -214,7 +214,7 @@ function loadModels(path,callback){
 }
 
 function addThing(name,geometry,materials){
-    console.log({name:name, geometry:geometry, materials:materials});
+    //console.log({name:name, geometry:geometry, materials:materials});
     var material;
     if(materials) {
         material = materials[0];
@@ -240,10 +240,10 @@ function loadLight(name,path){
 }
 
 function addLight(name,collada){
-    console.log({name:name, collada:collada});
+    //console.log({name:name, collada:collada});
     scene.add( collada.scene );
     for(var i = 0; i < collada.animations.length; i++){
-        console.log(collada.animations[i]);
+        //console.log(collada.animations[i]);
         var kfAnimation = new THREE.KeyFrameAnimation(collada.animations[i]);
         kfAnimation.timeScale = 1;
         //kfAnimation.loop = false;
@@ -435,8 +435,8 @@ function onWindowResize() {
 }
 
 function onLoadedPerson(person, i){
-    console.log("onLoadedPerson " + i);
-    console.log(person);
+    //console.log("onLoadedPerson " + i);
+    //console.log(person);
     audioLevels.push(0.0);
     people.push(person);
     startTweens(i);
@@ -530,7 +530,7 @@ function analyzeAudio(){
                         highCut: highCut,
                         average: average
                     };
-                    console.log(logStuff);
+                    //console.log(logStuff);
                 }
             }
         }
@@ -586,8 +586,8 @@ function getThingByName(name){
 }
 
 function morph(name, morphTargetIndex, duration){
-    // console.log("morph");
-    // console.log(getThingByName(name));
+    // //console.log("morph");
+    // //console.log(getThingByName(name));
     var thing = getThingByName(name);
     thing.morph(morphTargetIndex, 1, duration, audio.getTime());
     for(var i = 0; i < thing.clones.length; i++){
