@@ -2,7 +2,7 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
-var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json','ground.json','bassbell.json'];
+var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','wallmove.json','rain2.json','ground.json','bassbell.json','groundsea.json'];
 var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
