@@ -48,8 +48,8 @@ var timeEvents = [
     // { time: 1, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000)
     //     .addEventListener("change", handleChange);
     //          function handleChange(event) {
-    //             console.log('rain opacity changed..');
-    //             console.log(event);
+    //             //console.log('rain opacity changed..');
+    //             //console.log(event);
     //  }}},
     {time: 1.00, action: function(){createjs.Tween.get(things["rain.json"].model.material).to({opacity:1}, 1000);
                                     createjs.Tween.get(things["rain.json"].model.rotation).to({y:3},1000);

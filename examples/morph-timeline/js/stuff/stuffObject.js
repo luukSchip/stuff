@@ -88,7 +88,7 @@ var stuffObject = (function(){
             },
 			fromSingleObject: function(group, onLoadedCollada){
 				var self = this;
-                //console.log(dae)
+                ////console.log(dae)
                 // animations
                 // mesh
 				group.traverse( function ( child ) {

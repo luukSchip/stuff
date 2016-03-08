@@ -33,7 +33,7 @@ var stuffAudio = (function(){
 		};
 		var playAudio = function(sources){
 			startTime = audioCtx.currentTime;
-			console.log(startTime);
+			//console.log(startTime);
 			for(var i = 0; i < sources.length; i++){
 				sources[i].start(0);
 			}
@@ -48,8 +48,8 @@ var stuffAudio = (function(){
 			if(timeEvents.length > 0){
 				var timeEvent = timeEvents[0];
 				if(time >= timeEvent.time){
-					//console.log(time);
-					//console.log(timeEvent.action);
+					////console.log(time);
+					////console.log(timeEvent.action);
 					timeEvent.action();
 					timeEvents.shift();
 				}
@@ -74,11 +74,11 @@ var stuffAudio = (function(){
 					    request.responseType = 'arraybuffer';
 					    request.onload = function() {
 					        audioData.push(request.response);
-					        console.log("file " + filenames[i] + " loaded");
-					        console.log("filenames length: " + filenames.length);
-					        console.log(i == filenames.length - 1);
+					        //console.log("file " + filenames[i] + " loaded");
+					        //console.log("filenames length: " + filenames.length);
+					        //console.log(i == filenames.length - 1);
 					        if(i == filenames.length - 1){
-					        	console.log("heuj");
+					        	//console.log("heuj");
 					        	loadBuffers(audioData);
 					        }
 					    }

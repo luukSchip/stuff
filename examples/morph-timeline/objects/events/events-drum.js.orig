@@ -36,6 +36,28 @@ function cloneOnCircle(thing,amountOfClones,center,radius,callback){
         scene.add(modelClone);
     }
 }
+<<<<<<< HEAD
+
+function cloneOnCircle(thing,amountOfClones,center,radius,callback){
+    for(var i = 0; i < amountOfClones; i++){
+        var thingClone = thing.clone();
+        var modelClone = thingClone.model;
+
+        var anglePoint = (Math.PI*2) / amountOfClones * i;
+
+        var cloneX = center.x + Math.cos(anglePoint)*(radius.x);
+        var cloneZ = center.z + Math.sin(anglePoint)*(radius.z);
+        var cloneY = center.y;
+
+        modelClone.position.set(cloneX,cloneY,cloneZ);
+        thing.clones.push(thingClone);
+        callback(modelClone,i);
+        scene.add(modelClone);
+    }
+}
+
+=======
+>>>>>>> animationbackup
 function clone(thing, amountOfClones, callback){
      for(var i = 0; i < amountOfClones; i++){
         var thingClone = thing.clone();
@@ -45,6 +67,11 @@ function clone(thing, amountOfClones, callback){
         scene.add(modelClone);
     }
 }
+<<<<<<< HEAD
+
+things["moonground2.json"].model.position.y=8;
+things["moonground2.json"].model.scale.y=0.01;
+=======
 function tweenThing(_thing){
     createjs.Tween.get(_thing.model.position).to({y:8}, 1000);
 }
@@ -69,6 +96,7 @@ people[0].mesh.material.color.b=0;
 //         model.rotation.y = (Math.PI*2) / 12 * index * -1;
 //     }
 // );
+>>>>>>> animationbackup
 
 
 var timeEvents = [
@@ -143,11 +171,19 @@ var timeEvents = [
             tweenThing(clone);
         }
     }}, 
+//#1 --- scatter en daarna tweenen
+//         {time: 16.00, action: function(){
+//             scatter(things["rain2.json"],30,{x:10,y:10,z:10});randomPosition(things["rain2.json"]);var thing = things["rain2.json"]; tweenThing(thing);
+//         }},
+// //#1
+//         {time: 16.00, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:1}, 500);}},
+// //#1
+//          {time: 16.00, action: function(){var thing = things["rain2.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.rotation).to({y:-10}, 1000);}}},
     {time: 16.30, action: function(){createjs.Tween.get(things["pond.json"].model.scale).to({y:0.01}, 400); createjs.Tween.get(things["pond.json"].model.position).to({y:-3.6}, 400);}},
     {time: 16.36, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 16.38, action: function(){morph("DRUM3.json", 0, 0.3);}},
 //#1
-    //{time: 16.50, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:0}, 800);}},
+        {time: 16.50, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:0}, 800);}},
     {time: 16.72, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 16.74, action: function(){morph("DRUM3.json", 0, 0.05);}},
     {time: 16.80, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
@@ -360,8 +396,18 @@ var timeEvents = [
     {time: 42.54, action: function(){createjs.Tween.get(things["rings.json"].model.material).to({opacity:0},500);}},
     
 
+<<<<<<< HEAD
+    /*
+
+    { time: .45, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.3}, 100)}},
+     { time: 39.65, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}},
+     { time: 39.86, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.5}, 100)}},
+     { time: 40.0, action: function(){createjs.Tween.get(things["moonground2.json"].model.scale).to({y:0.1}, 300)}} 
+    */
+=======
 
 ];
+>>>>>>> animationbackup
 
 
 

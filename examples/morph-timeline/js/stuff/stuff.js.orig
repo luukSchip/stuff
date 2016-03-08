@@ -1,6 +1,18 @@
 //test//
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+<<<<<<< HEAD
+
+var thingFilenames = ['wall.json','ground.json','ripple2.json','rain.json','DRUM3.json','moonground2.json'];
+=======
+//'moonground2.json' 'wall.json' 'rain.json'
+var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json'];
+>>>>>>> animationbackup
+var audioFilenames = ['silence.mp3'];
+var eventFilenames = ['events-drum.js'];
+var modelFilenames = ['scramble.dae'];
+
+var animationCallbacks = []
 
 var yRotationFactor = 1;
 var xRotation = 0;
@@ -40,7 +52,67 @@ function init() {
 	initScene();
     initMouseHandlers();
     initStats();
+    initFiles();
 }
+
+function initFiles(){
+    doOperationsAndThen(thingFilenames, loadThingFile, function(){
+        doOperationsAndThen(modelFilenames, loadModelFile, function(){
+            doOperationsAndThen(eventFilenames, loadEventFile,function(){
+                var playButton = document.getElementById("playButton");
+                playButton.innerHTML = "Play";
+                playButton.onclick = play;
+            });
+        });
+    });
+}
+
+function play(){
+    document.getElementById('playButtonContainer').style.display = "none";
+    initAudio(audioFilenames,false);
+}
+
+function loadThingFile(filename, callback){
+    loadThings(filename,'objects/things/'+filename, callback);
+}
+
+function loadModelFile(filename, callback){
+    loadModels('objects/models/'+filename, callback);
+}
+
+function loadEventFile(filename, callback){
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener('load', function(e){
+        var scriptString = e.target.responseText;
+        appendScriptToDocument(scriptString);
+        callback();
+    });
+    oReq.open("get", 'objects/events/'+filename, true);
+    oReq.send();
+}
+
+function checkIfOperationsAreDoneAndThen(numberOfOperationsToPerform, callback) {
+  var performedOperations = 0;
+  return function() {
+    performedOperations++;
+    if(performedOperations === numberOfOperationsToPerform) {
+      callback();
+    }
+  }
+}
+
+function doOperationsAndThen(values, recurringOperation, finalOperation) {
+  var checkIfOperationsAreDoneAndThenDoFinalOperation = 
+        checkIfOperationsAreDoneAndThen(values.length, finalOperation);
+  if(values.length > 0){
+      for(var i = 0; i < values.length; i++) {
+        recurringOperation(values[i], checkIfOperationsAreDoneAndThenDoFinalOperation);
+      }
+  }else{
+    finalOperation();
+  }
+}
+
 
 function initMouseHandlers(){
     document.onmousemove = function (oPssEvt2) {
@@ -49,13 +121,13 @@ function initMouseHandlers(){
         xRotation = 0.5 - (parseFloat(oMsEvent2.clientY) / parseFloat(window.innerHeight));
     };
     // window.addWheelListener(document.body,function(e){
-    //     //console.log(e.deltaY);
+    //     ////console.log(e.deltaY);
     //     zPosition = e.deltaY > 0 ? Math.min(1000,zPosition * 1.1) : zPosition * 0.9;
     // },false);
 }
 
 function exportPreset(e){
-    console.log(e);
+    //console.log(e);
     var attributesArray = [];
     for(var i = 0; i < people.length; i++){
         attributesArray.push(people[i].attributes);
@@ -75,7 +147,7 @@ function importPreset(presetFile){
         return function(e) {
             var presetString = e.target.result;
             var attributesArray = JSON.parse(presetString);
-            console.log(attributesArray);
+            //console.log(attributesArray);
             for(var i = 0; i < people.length; i++){
                 var person = people[i];
                 var presetAttributes = attributesArray[i];
@@ -93,14 +165,17 @@ function importEvents(eventsFile){
     var reader = new FileReader();
     reader.onload = (function(theFile) {
         return function(e) {
-            console.log(e)
             var eventsString = e.target.result;
-            var scrpt = document.createElement('script');
-            scrpt.innerHTML=eventsString;
-            document.head.appendChild(scrpt);
+            appendScriptToDocument(eventsString);
         };
     })(eventsFile);
     reader.readAsBinaryString(eventsFile);
+}
+
+function appendScriptToDocument(scriptString){
+    var scrpt = document.createElement('script');
+    scrpt.innerHTML=scriptString;
+    document.head.appendChild(scrpt);
 }
 
 function initGui(){
@@ -124,25 +199,29 @@ function initGui(){
 
 }
 
-function loadModels(path){
-    var loader = new THREE.ColladaLoader();
-    loader.load( path , function ( collada ) {
-        console.log(collada);
-        scene.add(collada.scene);
-        for(var i = 0; i < collada.scene.children[0].children.length; i++){
-            console.log(collada.scene.children[0].children.length);
-            stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
-        }
+function loadThings(name,path,callback){
+    loader = new THREE.JSONLoader();
+	loader.load( path, function(geometry,materials){
+        addThing(name,geometry,materials);
+        callback();
     });
 }
 
-function loadThings(name,path){
-    loader = new THREE.JSONLoader();
-    loader.load( path, function(geometry,materials){addThing(name,geometry,materials)});
+function loadModels(path,callback){
+    var loader = new THREE.ColladaLoader();
+    loader.load( path , function ( collada ) {
+        //console.log(collada);
+        scene.add(collada.scene);
+        for(var i = 0; i < collada.scene.children[0].children.length; i++){
+            //console.log(collada.scene.children[0].children.length);
+            stuffObject(THREE).fromSingleObject(collada.scene.children[0].children[i],function(person){onLoadedPerson(person,i)});
+        }
+        callback();
+    });
 }
 
 function addThing(name,geometry,materials){
-    console.log({name:name, geometry:geometry, materials:materials});
+    //console.log({name:name, geometry:geometry, materials:materials});
     var material;
     if(materials) {
         material = materials[0];
@@ -155,22 +234,23 @@ function addThing(name,geometry,materials){
     }
 
     model = new THREE.Mesh( geometry, material );
-    model.castShadow = true;
-    model.receiveShadow = true;
+    //model.castShadow = true;
+    //model.receiveShadow = true;
     scene.add( model );
-    things[name] = stuffThing(THREE).create(model, name);
-}
 
+    things[name] = stuffThing(THREE,model,name);
+}
+    
 function loadLight(name,path){
     loader = new THREE.ColladaLoader();
     loader.load( path, function(collada){addLight(name,collada)});
 }
 
 function addLight(name,collada){
-    console.log({name:name, collada:collada});
+    //console.log({name:name, collada:collada});
     scene.add( collada.scene );
     for(var i = 0; i < collada.animations.length; i++){
-        console.log(collada.animations[i]);
+        //console.log(collada.animations[i]);
         var kfAnimation = new THREE.KeyFrameAnimation(collada.animations[i]);
         kfAnimation.timeScale = 1;
         //kfAnimation.loop = false;
@@ -194,9 +274,9 @@ function initFileHandlers(){
     function handleModelFileSelect(e) {
         loadModels(URL.createObjectURL(e.target.files[0]),true);
     }
-    function handleThingFileSelect(e) {
-        loadThings(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
-    }
+	function handleThingFileSelect(e) {
+		loadThings(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
+	}
     function handleLightFileSelect(e) {
         loadLight(e.target.files[0].name.split('.json')[0],URL.createObjectURL(e.target.files[0]),true);
     }
@@ -232,6 +312,7 @@ function initScene(){
     orbitBox.add(camera);
 
     scene = new THREE.Scene();
+
     scene.add(orbitBox);
     // RENDERER
     if ( Detector.webgl )
@@ -239,9 +320,22 @@ function initScene(){
     else
         renderer = new THREE.CanvasRenderer(); 
 
+    particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+    scene.add( particleLight );
 
+    // Lights
 
+    var directionalLight = new THREE.DirectionalLight(0xffffff );
+    directionalLight.position.x = 800;
+    directionalLight.position.y = 30;
+    directionalLight.position.z = -50;
+    scene.add( directionalLight );
 
+    var pointLight = new THREE.PointLight( 0xffffff, 0.5 );
+    particleLight.add( pointLight );
+    particleLight.position.x = -100;
+    particleLight.position.y = 100;
+    particleLight.position.z = 0;
 
 
 
@@ -252,27 +346,12 @@ function initScene(){
 
 
 
-<<<<<<< HEAD
-=======
-    particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x333333 } ) );
-    scene.add( particleLight );
->>>>>>> origin/lights
 
 
-<<<<<<< HEAD
-=======
-    var directionalLight = new THREE.DirectionalLight(0x333333 );
-    directionalLight.position.x = 800;
-    directionalLight.position.y = 30;
-    directionalLight.position.z = -50;
-    scene.add( directionalLight );
->>>>>>> origin/lights
 
 
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-
-
     container.appendChild( renderer.domElement );
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -363,8 +442,8 @@ function onWindowResize() {
 }
 
 function onLoadedPerson(person, i){
-    console.log("onLoadedPerson " + i);
-    console.log(person);
+    //console.log("onLoadedPerson " + i);
+    //console.log(person);
     audioLevels.push(0.0);
     people.push(person);
     startTweens(i);
@@ -458,7 +537,7 @@ function analyzeAudio(){
                         highCut: highCut,
                         average: average
                     };
-                    console.log(logStuff);
+                    //console.log(logStuff);
                 }
             }
         }
@@ -476,10 +555,22 @@ function animate() {
     if(stats){
         stats.update();
     }
+    // var time = Date.now();
+    // for(var i = 0; i < animations.length; i++){
+    //     var animation = animations[i];
+    //     animation.update( (time - prevTime)/3 );
+    // }
+    // prevTime = time;
     if(audio){
         var currentTime = audio.getTime();
+        $('#timeIndicator').html(currentTime);
         for(key in things){
-            things[key].updateAnimation(currentTime);
+            var thing = things[key];
+            thing.updateAnimation(currentTime);
+            for(var i = 0; i < thing.clones.length; i++){
+                var clone = thing.clones[i];
+                clone.updateAnimation(currentTime);
+            }
         }    
         for(key in animations){
             animations[key].update(clock.getDelta());
@@ -487,6 +578,10 @@ function animate() {
         prevTime = currentTime;
     }
     
+    for(var i = 0; i < animationCallbacks.length; i++){
+        var callback = animationCallbacks[i];
+        callback();
+    }
 }
 
 function render() {
@@ -502,9 +597,14 @@ function getThingByName(name){
 }
 
 function morph(name, morphTargetIndex, duration){
-    // console.log("morph");
-    // console.log(getThingByName(name));
-    getThingByName(name).morph(morphTargetIndex, 1, duration, audio.getTime());
+    // //console.log("morph");
+    // //console.log(getThingByName(name));
+    var thing = getThingByName(name);
+    thing.morph(morphTargetIndex, 1, duration, audio.getTime());
+    for(var i = 0; i < thing.clones.length; i++){
+        var clone = thing.clones[i];
+        clone.morph(morphTargetIndex, 1, duration, audio.getTime());
+    }
 }
 
 // var timeEvents = [
