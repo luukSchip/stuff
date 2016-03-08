@@ -6,7 +6,7 @@ function randomPosition(thing) {
         reposition(model);
     }
 
-    function reposition(object){
+    function reposition(object, radius){
         var objectPosition = object.position;
 
         var anglePoint = Math.random()*Math.PI*2;

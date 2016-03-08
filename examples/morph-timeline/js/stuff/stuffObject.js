@@ -3,7 +3,7 @@ var stuffObject = (function(){
 	return function(THREE) {
 		return {
 			attributes: {
-				scrambleAmplitude: {x:0.2,y:0.2,z:0.2},
+				scrambleAmplitude: {x:20,y:20,z:20},
 				scramble: true,
 				tweenSpeed: 25,
 				posX: 0,

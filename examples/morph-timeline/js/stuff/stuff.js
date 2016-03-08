@@ -2,12 +2,10 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
-var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json','rain.json'];
-var audioFilenames = ['silence.mp3'];
-//var audioFilenames = ['3 of 4.mp3'];
+var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json','ground.json','bassbell.json'];
+var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
-//var modelFilenames = ['scramble.dae'];
-var modelFilenames = [];
+var modelFilenames = ['scramble.dae'];
 
 var animationCallbacks = {};
 var yRotationFactor = 1;
@@ -322,13 +320,13 @@ function initScene(){
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff );
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1 );
     directionalLight.position.x = 800;
     directionalLight.position.y = 30;
     directionalLight.position.z = -50;
     scene.add( directionalLight );
 
-    var pointLight = new THREE.PointLight( 0xffffff, 0.5 );
+    var pointLight = new THREE.PointLight( 0xffffff, 2 );
     particleLight.add( pointLight );
     particleLight.position.x = -100;
     particleLight.position.y = 100;
@@ -339,7 +337,7 @@ function initScene(){
 
 
 
-    // initPointLightScene();
+    //initPointLightScene();
 
 
 
@@ -446,7 +444,9 @@ function onLoadedPerson(person, i){
     startTweens(person, i);
     person.startAnimations();
     var folder = gui.addFolder("person " + i);
-    folder.add(person.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
+    folder.add(person.attributes.scrambleAmplitude, 'x', 0.0, 1.0).listen();
+    folder.add(person.attributes.scrambleAmplitude, 'y', 0.0, 1.0).listen();
+    folder.add(person.attributes.scrambleAmplitude, 'z', 0.0, 1.0).listen();
     folder.add(person.attributes, 'tweenSpeed', 1, 1000).listen();
     folder.add(person.attributes, 'scale', 0, 5)
         .listen()
@@ -496,13 +496,17 @@ function tweenVertex(object, vertex, originalVertex, index){
     var geometry = object.model.geometry;
     var attributes = object.attributes;
     var amplitude = {
-        x: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.x / 100.0,
-        y: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.y / 100.0,
-        z: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.z / 100.0
+        x: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.x,
+        y: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.y,
+        z: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.z
     };
     var tweenSpeed = attributes.tweenSpeed;
-    if(index){
-        amplitude = 1 - (0.5 - Math.random() * 2) * attributes.scrambleAmplitude * parseFloat(audioLevels[index] / 100.0);
+    if(index != null){
+        amplitude = {
+            x: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.x * parseFloat(audioLevels[index] / 100.0),
+            y: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.y * parseFloat(audioLevels[index] / 100.0),
+            z: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.z * parseFloat(audioLevels[index] / 100.0)
+        };
     }
     if(attributes.scramble){
         //console.log(object.name + ": " + amplitude);
