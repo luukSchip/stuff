@@ -77,7 +77,7 @@ scatter(things["bassbell.json"],4,{x:1,y:1,z:1});
 things["DRUM3.json"].model.scale.set(0.25,0.25,0.25);
 things["bassbell.json"].model.material.color.b=0;
 things["groundsea.json"].model.material.opacity=0;
-things["groundsea.json"].model.position.y=50;
+things["groundsea.json"].model.position.y=8;
 
 
 
@@ -102,7 +102,8 @@ var timeEvents = [
     // {time:2.50, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0}, 500)}},
     // {time:3.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500)}},
     
-    {time:  8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);}},
+    {time:  8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);
+rotateClones(things["bassbell.json"],0.06,500)}},
     {time:  8.06, action: function(){morph("DRUM3.json", 0, 0.4);}},
     {time:  8.48, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     {time:  8.50, action: function(){morph("DRUM3.json", 0, 0.18);}},
@@ -434,6 +435,8 @@ var timeEvents = [
     createjs.Tween.get(things["DRUM3.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
     createjs.Tween.get(things["ripple2.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
     createjs.Tween.get(things["moonground.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
+    createjs.Tween.get(things["groundsea.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
+    createjs.Tween.get(things["groundsea.json"].model.material).to({opacity:1},10);
     var thing = things["DRUM3.json"]; 
         for(var i = 0; i < thing.clones.length; i++){
             var clone = thing.clones[i];
