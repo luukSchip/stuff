@@ -318,13 +318,13 @@ function initScene(){
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff );
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 3 );
     directionalLight.position.x = 800;
     directionalLight.position.y = 30;
     directionalLight.position.z = -50;
     scene.add( directionalLight );
 
-    var pointLight = new THREE.PointLight( 0xffffff, 0.5 );
+    var pointLight = new THREE.PointLight( 0xffffff, 3 );
     particleLight.add( pointLight );
     particleLight.position.x = -100;
     particleLight.position.y = 100;

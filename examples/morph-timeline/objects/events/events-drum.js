@@ -130,16 +130,16 @@ var timeEvents = [
     {time: 15.90, action: function(){morph("DRUM3.json", 0, 0.45);}},
     {time: 16.00, action: function(){createjs.Tween.get(things["pond.json"].model.scale).to({y:1}, 300); createjs.Tween.get(things["pond.json"].model.position).to({y:0}, 300);}},
 //#1 --- scatter en daarna tweenen
-        {time: 16.00, action: function(){scatter(things["rain2.json"],30,{x:10,y:10,z:10});randomPosition(things["rain2.json"]);var thing = things["rain2.json"]; tweenThing(thing);}},
+        //{time: 16.00, action: function(){scatter(things["rain2.json"],30,{x:10,y:10,z:1});randomPosition(things["rain2.json"]);var thing = things["rain2.json"]; tweenThing(thing);}},
 //#1
-        {time: 16.00, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:1}, 500);}},
+        //{time: 16.00, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:1}, 500);}},
 //#1
-         {time: 16.00, action: function(){var thing = things["rain2.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.rotation).to({y:-10}, 1000);}}},
+        // {time: 16.00, action: function(){var thing = things["rain2.json"]; tweenThing(thing); for(var i = 0; i < thing.clones.length; i++){ var clone = thing.clones[i]; tweenThing(clone);} function tweenThing(_thing){createjs.Tween.get(_thing.model.rotation).to({y:-10}, 1000);}}},
     {time: 16.30, action: function(){createjs.Tween.get(things["pond.json"].model.scale).to({y:0.01}, 400); createjs.Tween.get(things["pond.json"].model.position).to({y:-3.6}, 400);}},
     {time: 16.36, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 16.38, action: function(){morph("DRUM3.json", 0, 0.3);}},
 //#1
-        {time: 16.50, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:0}, 800);}},
+    //{time: 16.50, action: function(){createjs.Tween.get(things["rain2.json"].model.material).to({opacity:0}, 800);}},
     {time: 16.72, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
     {time: 16.74, action: function(){morph("DRUM3.json", 0, 0.05);}},
     {time: 16.80, action: function(){randomPosition(things["DRUM3.json"]);morph("DRUM3.json", 1, 0.02);}},
