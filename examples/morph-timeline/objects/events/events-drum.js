@@ -10,18 +10,19 @@ function randomPosition(thing, radius, callback) {
 }
 function scatter(thing,amountOfClones,radius,callback){
     scene.remove(thing.model);
-    var cloneContainer = new THREE.Object3D();
+    if(!thing.cloneContainer){
+        thing.cloneContainer = new THREE.Object3D();
+        scene.add(thing.cloneContainer);
+    }
     for(var i = 0; i < amountOfClones; i++){
         var thingClone = thing.clone();
         var modelClone = thingClone.model;
         reposition(modelClone, radius);
-        cloneContainer.add(modelClone);
+        thing.cloneContainer.add(modelClone);
         if(callback){
             callback(modelClone);
         }
     }
-    thing.cloneContainer = cloneContainer;
-    scene.add(cloneContainer);
 }
 function reposition(model, radius){
     var anglePoint = Math.random()*Math.PI*2;
@@ -153,14 +154,7 @@ var timeEvents = [
     {time: 16.00, action: function(){
         createjs.Tween.get(things["pond.json"].model.scale).to({y:1}, 300); 
         createjs.Tween.get(things["pond.json"].model.position).to({y:0}, 300);
-    //     var thing = things["rain2.json"]; 
-    //     scatter(thing,30,{x:10,y:10,z:10});
-    //     tweenThing(thing);
-    //     createjs.Tween.get(thing.model.material).to({opacity:1}, 500);
-    //     for(var i = 0; i < thing.clones.length; i++){ 
-    //         var clone = thing.clones[i]; 
-    //         tweenThing(clone);
-    //     }
+        things["DRUM3.json"].removeClones();
      }}, 
     {time: 16.29, action: function(){var thing = things["bassbell.json"]; 
         for(var i = 0; i < thing.clones.length; i++){

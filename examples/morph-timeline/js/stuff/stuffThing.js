@@ -14,6 +14,11 @@ var stuffThing = (function(){
 				scrambleAmplitude: {x: 25.0,y: 25.0,z: 25.0},
 				tweenSpeed: 200
 			},
+			removeClones: function(){
+				scene.remove(this.cloneContainer);
+				this.clones = [];
+				this.cloneContainer = null;
+			},
 			initializeVertices: function(){
 				this.vertices = model.geometry.vertices;
 				for(var i = 0; i < this.vertices.length; i++){
