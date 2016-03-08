@@ -10,18 +10,19 @@ function randomPosition(thing, radius, callback) {
 }
 function scatter(thing,amountOfClones,radius,callback){
     scene.remove(thing.model);
-    var cloneContainer = new THREE.Object3D();
+    if(!thing.cloneContainer){
+        thing.cloneContainer = new THREE.Object3D();
+        scene.add(thing.cloneContainer);
+    }
     for(var i = 0; i < amountOfClones; i++){
         var thingClone = thing.clone();
         var modelClone = thingClone.model;
         reposition(modelClone, radius);
-        cloneContainer.add(modelClone);
+        thing.cloneContainer.add(modelClone);
         if(callback){
             callback(modelClone);
         }
     }
-    thing.cloneContainer = cloneContainer;
-    scene.add(cloneContainer);
 }
 function reposition(model, radius){
     var anglePoint = Math.random()*Math.PI*2;
@@ -76,8 +77,8 @@ things["bassbell.json"].model.scale.set(0.2,0.2,0.2);
 scatter(things["bassbell.json"],4,{x:1,y:1,z:1});
 things["DRUM3.json"].model.scale.set(0.25,0.25,0.25);
 things["bassbell.json"].model.material.color.b=0;
-things["groundsea.json"].model.material.opacity=0;
 things["groundsea.json"].model.position.y=8;
+things["wall.json"].model.position.y=8;
 
 
 
@@ -154,14 +155,7 @@ rotateClones(things["bassbell.json"],0.06,500)}},
     {time: 16.00, action: function(){
         createjs.Tween.get(things["pond.json"].model.scale).to({y:1}, 300); 
         createjs.Tween.get(things["pond.json"].model.position).to({y:0}, 300);
-    //     var thing = things["rain2.json"]; 
-    //     scatter(thing,30,{x:10,y:10,z:10});
-    //     tweenThing(thing);
-    //     createjs.Tween.get(thing.model.material).to({opacity:1}, 500);
-    //     for(var i = 0; i < thing.clones.length; i++){ 
-    //         var clone = thing.clones[i]; 
-    //         tweenThing(clone);
-    //     }
+        things["DRUM3.json"].removeClones();
      }}, 
     {time: 16.29, action: function(){var thing = things["bassbell.json"]; 
         for(var i = 0; i < thing.clones.length; i++){
@@ -437,6 +431,8 @@ rotateClones(things["bassbell.json"],0.06,500)}},
     createjs.Tween.get(things["moonground.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
     createjs.Tween.get(things["groundsea.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
     createjs.Tween.get(things["groundsea.json"].model.material).to({opacity:1},10);
+    createjs.Tween.get(things["wall.json"].model.material).to({opacity:1},10);
+    createjs.Tween.get(things["wall.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
     var thing = things["DRUM3.json"]; 
         for(var i = 0; i < thing.clones.length; i++){
             var clone = thing.clones[i];
