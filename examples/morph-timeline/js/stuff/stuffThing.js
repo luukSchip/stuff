@@ -19,12 +19,12 @@ var stuffThing = (function(){
 			updateAnimation: function(time){
 				var self = this; 
 				for(var i = 0; i < self.animations.length; i++){
-					//console.log(self);
+					////console.log(self);
 					var animation = self.animations[0];
 					var progress = (time - animation.startTime) / animation.duration;
 					//var influence = (progress * (animation.toValue - animation.fromValue)) + animation.fromValue;
 					var influence = progress * animation.toValue ;
-					//console.log({index:animation.morphTargetIndex, influence:influence, animation:animation});
+					////console.log({index:animation.morphTargetIndex, influence:influence, animation:animation});
 					if(progress > 1 ){
 						self.animations.splice(i,1);
 						self.model.morphTargetInfluences[animation.morphTargetIndex] = 1;
@@ -34,7 +34,7 @@ var stuffThing = (function(){
 					}else{
 						self.model.morphTargetInfluences[animation.morphTargetIndex] = influence;
 						self.model.morphTargetInfluences[prevMorphTargetIndex] = 1 - influence;
-						console.log(cloneIndex + ", " + influence + ", " + self.model.morphTargetInfluences[animation.morphTargetIndex]);
+						//console.log(cloneIndex + ", " + influence + ", " + self.model.morphTargetInfluences[animation.morphTargetIndex]);
 					}
 				}
 			},

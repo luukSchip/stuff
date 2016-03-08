@@ -5,8 +5,12 @@
         "colorSpecular": [0.5,0.001816,0],
         "visible": true,
         "opacity": 0,
+<<<<<<< HEAD
+        "doubleSided": true,
+=======
         "colorEmissive": [0.64,0.386009,0],
         "blending": "NormalBlending",
+>>>>>>> animationbackup
         "wireframe": false,
         "specularCoef": 50,
         "colorAmbient": [0.64,0.386009,0],
