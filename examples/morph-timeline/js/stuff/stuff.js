@@ -3,10 +3,12 @@
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
 var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','wallmove.json','rain2.json','ground.json','bassbell.json','groundsea.json'];
-//var audioFilenames = ['3 of 4.mp3'];
-var audioFilenames = ['silence.mp3'];
+var audioFilenames = ['3 of 4.mp3'];
+//var audioFilenames = ['silence.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
+
+var ffwdTime = 15;
 
 var animationCallbacks = {};
 var yRotationFactor = 1;
@@ -64,7 +66,7 @@ function initFiles(){
 
 function play(){
     document.getElementById('playButtonContainer').style.display = "none";
-    initAudio(audioFilenames,false);
+    initAudio(audioFilenames,false, ffwdTime);
 }
 
 function loadThingFile(filename, callback){
@@ -426,8 +428,8 @@ function initPointLightScene(){
 }
 
 
-function initAudio(filenames,absolute){
-    audio = stuffAudio(filenames,absolute).init().clock(100,timeEvents);
+function initAudio(filenames,absolute,ffwdTime){
+    audio = stuffAudio(filenames,absolute).init(ffwdTime).clock(100,timeEvents);
     prevTime = audio.getTime();
 }
 

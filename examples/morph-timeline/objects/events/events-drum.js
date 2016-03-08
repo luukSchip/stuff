@@ -95,8 +95,8 @@ things["groundsea.json"].model.position.y=50;
 
 var timeEvents = [
 
-    {time: 0.00, action: function(){createjs.Tween.get(people[0].mesh.position).to({z:-300}, 15000, createjs.Ease.getPowOut(3));
-                                    createjs.Tween.get(people[0].mesh.material.color).to({r:1,g:1,b:1}, 15000);}},                              
+     {time: 0.00, action: function(){createjs.Tween.get(people[0].mesh.position).to({z:-300}, 15000, createjs.Ease.getPowOut(3));
+                                     createjs.Tween.get(people[0].mesh.material.color).to({r:1,g:1,b:1}, 15000);}},                              
     // {time: 1.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500); createjs.Tween.get(things["wallmove.json"].model.rotation).to({y:8000},3000)}},
     // {time:1.50, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0}, 500)}},
     // {time:2.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500)}},

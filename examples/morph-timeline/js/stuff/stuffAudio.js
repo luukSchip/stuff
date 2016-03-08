@@ -7,6 +7,7 @@ var stuffAudio = (function(){
 		var timeEvents;
 		var sources = new Array();
 		var startTime = 0;
+		var ffwdTime = 0;
 		var clockActive = false;
 		var loadBuffers = function(audioData){
 			for(var i = 0; i < audioData.length; i++){
@@ -33,9 +34,10 @@ var stuffAudio = (function(){
 		};
 		var playAudio = function(sources){
 			startTime = audioCtx.currentTime;
+			audioCtx.currentTime = ffwdTime;
 			//console.log(startTime);
 			for(var i = 0; i < sources.length; i++){
-				sources[i].start(0);
+				sources[i].start(0, ffwdTime);
 			}
 			if(clockActive){
 				checkClock(self.clockInterval);
@@ -44,13 +46,15 @@ var stuffAudio = (function(){
 		};
 		var checkClock = function(interval){
 			var self = this;
-			var time = audioCtx.currentTime - startTime;
+			var time = audioCtx.currentTime - startTime + ffwdTime;
 			if(timeEvents.length > 0){
 				var timeEvent = timeEvents[0];
 				if(time >= timeEvent.time){
 					////console.log(time);
 					////console.log(timeEvent.action);
-					timeEvent.action();
+					if(timeEvent.time >= ffwdTime){
+						timeEvent.action();
+					}
 					timeEvents.shift();
 				}
 			}
@@ -60,8 +64,12 @@ var stuffAudio = (function(){
 			sources: sources,
 			analysers: analysers,
 			clockInterval: undefined,
-			init: function(){
+			init: function(_ffwdTime){
 				var self = this;
+				if(_ffwdTime){
+					console.log("ffwdTime = " + _ffwdTime);
+					ffwdTime = _ffwdTime;
+				}
 				var audioData = new Array();
 				for(var i = 0; i < filenames.length; i++){
 				    (function(i, filenames){
@@ -89,13 +97,14 @@ var stuffAudio = (function(){
 			},
 			clock: function(interval,_timeEvents){
 				var self = this;
+				self.startTime = startTime;
 				timeEvents = _timeEvents;
 				self.clockInterval = interval;
 				clockActive = true;
 				return self;
 			},
 			getTime: function(){
-				return audioCtx.currentTime - startTime;
+				return audioCtx.currentTime - startTime + ffwdTime;
 			}
 		}
 	}
