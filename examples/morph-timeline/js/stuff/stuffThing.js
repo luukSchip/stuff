@@ -4,8 +4,24 @@ var stuffThing = (function(){
 		return {
 			name: name,
 			animations: [],
+			vertices: null,
+			originalVertices: [],
 			model: model,
+			cloneContainer: null,
 			clones:[],
+			attributes:{
+				scramble: true,
+				scrambleAmplitude: {x: 25.0,y: 25.0,z: 25.0},
+				tweenSpeed: 200
+			},
+			initializeVertices: function(){
+				this.vertices = model.geometry.vertices;
+				for(var i = 0; i < this.vertices.length; i++){
+					var vertex = this.vertices[i];
+					var originalFaceVertex = new THREE.Vector3(vertex.x, vertex.y, vertex.z);
+					this.originalVertices.push(originalFaceVertex);
+				}
+			},
 			morph: function(morphTargetIndex, toValue, duration, startTime){
 				var self = this;
 				var fromValue = self.model.morphTargetInfluences[morphTargetIndex];

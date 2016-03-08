@@ -2,12 +2,14 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
-var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json'];
+var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json','rain.json'];
 var audioFilenames = ['silence.mp3'];
+//var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
-var modelFilenames = ['scramble.dae'];
+//var modelFilenames = ['scramble.dae'];
+var modelFilenames = [];
 
-var animationCallbacks = []
+var animationCallbacks = {};
 var yRotationFactor = 1;
 var xRotation = 0;
 var zPosition = 10.0;
@@ -233,6 +235,7 @@ function addThing(name,geometry,materials){
     scene.add( model );
 
     things[name] = stuffThing(THREE,model,name);
+    things[name].initializeVertices();
 }
     
 function loadLight(name,path){
@@ -336,7 +339,7 @@ function initScene(){
 
 
 
-    //initPointLightScene();
+    // initPointLightScene();
 
 
 
@@ -440,7 +443,7 @@ function onLoadedPerson(person, i){
     //console.log(person);
     audioLevels.push(0.0);
     people.push(person);
-    startTweens(i);
+    startTweens(person, i);
     person.startAnimations();
     var folder = gui.addFolder("person " + i);
     folder.add(person.attributes, 'scrambleAmplitude', 0.0, 1.0).listen();
@@ -448,59 +451,89 @@ function onLoadedPerson(person, i){
     folder.add(person.attributes, 'scale', 0, 5)
         .listen()
         .onChange(function(value){
-            person.mesh.scale.set(value,value,value);
+            person.model.scale.set(value,value,value);
         });
     folder.add(person.attributes, 'posX', -500, 500)
         .listen()
         .onChange(function(value){
-            person.mesh.position.x = value;
+            person.model.position.x = value;
         });
     folder.add(person.attributes, 'posY', -500, 500)
         .listen()
         .onChange(function(value){
-            person.mesh.position.y = value;
+            person.model.position.y = value;
         });
     folder.add(person.attributes, 'posZ', -500, 500)
         .listen()
         .onChange(function(value){
-            person.mesh.position.z = value;
+            person.model.position.z = value;
         });
     folder.add(person.attributes, 'lowCut', 0, 1024).listen();
     folder.add(person.attributes, 'highCut', 0, 1024).listen();
 }
 
-function startTweens(headIndex){
-    var head = people[headIndex];
-    var faceVertices = head.faceVertices;
-    var originalFaceVertices = head.originalFaceVertices;
-    for(var i = 0; i < faceVertices.length; i++){
-        var faceVertex = faceVertices[i];
-        var originalFaceVertex = originalFaceVertices[i];
-        tweenVertex(headIndex, faceVertex, originalFaceVertex);
+function scramble(object,scrambleAmplitude, tweenSpeed, duration){
+    object.attributes.scrambleAmplitude = scrambleAmplitude;
+    object.attributes.tweenSpeed = tweenSpeed;
+    object.attributes.scramble = true;
+    startTweens(object,null);
+    setTimeout(function(){
+        object.attributes.scramble = false;
+    },duration);
+}
+
+function startTweens(object, index){
+    var vertices = object.vertices;
+    var originalVertices = object.originalVertices;
+    for(var i = 0; i < vertices.length; i++){
+        var vertex = vertices[i];
+        var originalVertex = originalVertices[i];
+        tweenVertex(object, vertex, originalVertex, index);
     }
 }
 
-function tweenVertex(headIndex, faceVertex, originalFaceVertex){
-    var faceGeometry = people[headIndex].mesh.geometry;
-    var attributes = people[headIndex].attributes;
-    var amplitude = 1 - (0.5 - Math.random() * 2) * attributes.scrambleAmplitude * parseFloat(audioLevels[headIndex] / 100.0);
+function tweenVertex(object, vertex, originalVertex, index){
+    var geometry = object.model.geometry;
+    var attributes = object.attributes;
+    var amplitude = {
+        x: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.x / 100.0,
+        y: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.y / 100.0,
+        z: (0.5 - Math.random() * 2) * attributes.scrambleAmplitude.z / 100.0
+    };
+    var tweenSpeed = attributes.tweenSpeed;
+    if(index){
+        amplitude = 1 - (0.5 - Math.random() * 2) * attributes.scrambleAmplitude * parseFloat(audioLevels[index] / 100.0);
+    }
     if(attributes.scramble){
-        new TWEEN.Tween({x:faceVertex.x, y:faceVertex.y, z:faceVertex.z})
+        //console.log(object.name + ": " + amplitude);
+        new TWEEN.Tween({x:vertex.x, y:vertex.y, z:vertex.z})
             .to({
-                x:originalFaceVertex.x * amplitude,
-                y:originalFaceVertex.y * amplitude,
-                z:originalFaceVertex.z * amplitude
-            },Math.random() * attributes.tweenSpeed)
+                x:originalVertex.x + amplitude.x,
+                y:originalVertex.y + amplitude.y,
+                z:originalVertex.z + amplitude.z
+            },Math.random() * tweenSpeed)
             .onUpdate(function(){
-                faceVertex.x = this.x;
-                faceVertex.y = this.y;
-                faceVertex.z = this.z;
-                faceGeometry.verticesNeedUpdate = true;
-
-                faceGeometry.normalsNeedUpdate = true;
+                vertex.x = this.x;
+                vertex.y = this.y;
+                vertex.z = this.z;
+                geometry.verticesNeedUpdate = true;
+                geometry.normalsNeedUpdate = true;
             })
             .onComplete(function(){
-                tweenVertex(headIndex, faceVertex, originalFaceVertex);
+                if(attributes.scramble){
+                    tweenVertex(object, vertex, originalVertex, index);
+                }else{
+                    new TWEEN.Tween({x:vertex.x,y:vertex.y,z:vertex.z})
+                        .to({x:originalVertex.x,y:originalVertex.y,z:originalVertex.z}, 10)
+                        .onUpdate(function(){
+                            vertex.x = this.x;
+                            vertex.y = this.y;
+                            vertex.z = this.z;
+                            geometry.verticesNeedUpdate = true;
+                            geometry.normalsNeedUpdate = true;
+                        })
+                        .start();
+                }
             })
             .start();
     }
@@ -570,6 +603,10 @@ function animate() {
             animations[key].update(clock.getDelta());
         }
         prevTime = currentTime;
+    }    
+    for(key in animationCallbacks){
+        var callback = animationCallbacks[key];
+        callback();
     }
     
 }

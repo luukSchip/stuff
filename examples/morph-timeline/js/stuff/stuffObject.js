@@ -3,7 +3,7 @@ var stuffObject = (function(){
 	return function(THREE) {
 		return {
 			attributes: {
-				scrambleAmplitude: 0.2,
+				scrambleAmplitude: {x:0.2,y:0.2,z:0.2},
 				scramble: true,
 				tweenSpeed: 25,
 				posX: 0,
@@ -13,14 +13,15 @@ var stuffObject = (function(){
 				highCut: 1024,
 				scale: 1.0
 			},
-			dae: undefined,
-			face: undefined,
-			wireFace: undefined,
-			faceGeometry: undefined,
-			mesh: undefined,
-			scene: undefined,
-			faceVertices: undefined,
-			originalFaceVertices: new Array(),
+			dae: null,
+			face: null,
+			wireFace: null,
+			faceGeometry: null,
+			mesh: null,
+			model: null,
+			scene: null,
+			vertices: null,
+			originalVertices: new Array(),
 			animations: [],
             animationProgress: 0,
 			startAnimations: function(){
@@ -94,6 +95,7 @@ var stuffObject = (function(){
 				group.traverse( function ( child ) {
 					if ( child instanceof THREE.Mesh ) {
 						self.mesh = child;
+						self.model = child;
 						child.material = new THREE.MeshPhongMaterial( {
 							color: 0x333333,
 							side: THREE.DoubleSide,
@@ -105,14 +107,14 @@ var stuffObject = (function(){
 
 						face = faceGeometry = child;//dae.children[0].children[0];
 						faceGeometry = face.geometry;
-						self.faceVertices = faceGeometry.vertices;
+						self.vertices = faceGeometry.vertices;
 						faceGeometry.computeVertexNormals();
 						faceGeometry.computeMorphNormals();
 
-						for(var i = 0; i < self.faceVertices.length; i++){
-							var faceVertex = self.faceVertices[i];
-							var originalFaceVertex = new THREE.Vector3(faceVertex.x, faceVertex.y, faceVertex.z);
-							self.originalFaceVertices.push(originalFaceVertex);
+						for(var i = 0; i < self.vertices.length; i++){
+							var vertex = self.vertices[i];
+							var originalFaceVertex = new THREE.Vector3(vertex.x, vertex.y, vertex.z);
+							self.originalVertices.push(originalFaceVertex);
 						}
 						
 					}
