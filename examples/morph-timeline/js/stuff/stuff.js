@@ -2,8 +2,8 @@
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 //'moonground2.json' 'wall.json' 'rain.json'
-var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json'];
-var audioFilenames = ['silence.mp3'];
+var thingFilenames = ['ripple2.json','DRUM3.json','pond.json','rain2.json','moonground.json','rings.json','bells.json','wallmove.json','rain2.json','ground.json','bassbell.json'];
+var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
 
@@ -319,13 +319,13 @@ function initScene(){
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 3 );
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1 );
     directionalLight.position.x = 800;
     directionalLight.position.y = 30;
     directionalLight.position.z = -50;
     scene.add( directionalLight );
 
-    var pointLight = new THREE.PointLight( 0xffffff, 3 );
+    var pointLight = new THREE.PointLight( 0xffffff, 2 );
     particleLight.add( pointLight );
     particleLight.position.x = -100;
     particleLight.position.y = 100;
