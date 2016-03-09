@@ -98,7 +98,7 @@ things["2bassv2.json"].model.rotation.y=Math.PI*Math.random();
 things["2bass.json"].model.rotation.y=Math.PI*Math.random();
 
 //underneath: tijdelijke deletes
-people[0].mesh.position.z=-8000;
+//people[0].mesh.position.z=-8000;
 
 
 

@@ -10,7 +10,7 @@ var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
 
-var ffwdTime = 40;
+var ffwdTime = 0;
 
 var animationCallbacks = {};
 var yRotationFactor = 1;
@@ -350,8 +350,8 @@ function initScene(){
 
 
 
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setPixelRatio( 1 );
+    renderer.setSize( 1200,600 );
     container.appendChild( renderer.domElement );
 
     window.addEventListener( 'resize', onWindowResize, false );
