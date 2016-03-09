@@ -4,7 +4,7 @@
         "depthWrite": true,
         "colorSpecular": [0.5,0.001816,0],
         "visible": true,
-        "opacity": 0,
+        "opacity": 1,
         "colorEmissive": [0.64,0.386009,0],
         "blending": "NormalBlending",
         "wireframe": false,

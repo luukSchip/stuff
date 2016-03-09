@@ -77,6 +77,37 @@ cloneOnCircle(
     }
 );
 
+// TWEEN SCRAMBLE
+     // createjs.Tween.get(things["groundsea.json"].attributes.scrambleAmplitude).to({y:5},5000);
+
+
+// weird animation:
+    // cloneOnCircle(
+        //     things["rain.json"],    // Thing
+        //     120,                    // amount of clones
+        //     {x:0,y:0,z:0},          // center
+        //     {x:5,z:5},              // radius
+        //     function(model,index){  // callback
+        //         model.rotation.y = (Math.PI*2) / 120 * index * -1;
+        //         model.rotation.x = (Math.PI*2) / 120 * index * -1;
+        //     }
+        // );
+        // var callback = function(){          // function definition
+        //     // rotate each clone of 'rain.json' around the x axis a tiny bit
+        //     var thing = things["rain.json"];
+        //     for(var i = 0; i < thing.clones.length; i++){
+        //         var clone = thing.clones[i];
+        //         clone.model.rotation.x += 0.01;
+        //     }
+        // }
+        // animationCallbacks["string"]=callback;
+
+
+    //new time:
+        // delete animationCallbacks["string"];
+
+
+
 
 
 var timeEvents = [

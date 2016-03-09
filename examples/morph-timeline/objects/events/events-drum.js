@@ -33,6 +33,11 @@ function reposition(model, radius){
     model.position.set(cloneX,cloneY,cloneZ);
 }
 function cloneOnCircle(thing,amountOfClones,center,radius,callback){
+    scene.remove(thing.model);
+    if(!thing.cloneContainer){
+        thing.cloneContainer = new THREE.Object3D();
+        scene.add(thing.cloneContainer);
+    }
     for(var i = 0; i < amountOfClones; i++){
         var thingClone = thing.clone();
         var modelClone = thingClone.model;
@@ -43,7 +48,7 @@ function cloneOnCircle(thing,amountOfClones,center,radius,callback){
         modelClone.position.set(cloneX,cloneY,cloneZ);
         thing.clones.push(thingClone);
         callback(modelClone,i);
-        scene.add(modelClone);
+        thing.cloneContainer.add(modelClone);
     }
 }
 function clone(thing, amountOfClones, callback){
@@ -79,6 +84,21 @@ things["DRUM3.json"].model.scale.set(0.25,0.25,0.25);
 things["bassbell.json"].model.material.color.b=0;
 things["groundsea.json"].model.position.y=8;
 things["wall.json"].model.position.y=8;
+things["2bass.json"].model.scale.set(1.6,1.6,1.6);
+things["2bass.json"].model.position.y=-8;
+things["2bassv2.json"].model.scale.set(1,1,1);
+things["2bassv2.json"].model.position.y=-8;
+things["2bassv3.json"].model.scale.set(2,2,2);
+things["2bassv3.json"].model.position.y=-8;
+things["2bassv4.json"].model.scale.set(1.3,1.3,1.3);
+things["2bassv4.json"].model.position.y=-8;
+things["2bassv4.json"].model.rotation.y=Math.PI*Math.random();
+things["2bassv3.json"].model.rotation.y=Math.PI*Math.random();
+things["2bassv2.json"].model.rotation.y=Math.PI*Math.random();
+things["2bass.json"].model.rotation.y=Math.PI*Math.random();
+
+//underneath: tijdelijke deletes
+people[0].mesh.position.z=-8000;
 
 
 
@@ -95,16 +115,15 @@ things["wall.json"].model.position.y=8;
 
 var timeEvents = [
 
-    {time: 0.00, action: function(){createjs.Tween.get(people[0].mesh.position).to({z:-300}, 15000, createjs.Ease.getPowOut(3));
-                                    createjs.Tween.get(people[0].mesh.material.color).to({r:1,g:1,b:1}, 15000);}},                              
+     {time: 0.00, action: function(){createjs.Tween.get(people[0].mesh.position).to({z:-300}, 15000, createjs.Ease.getPowOut(3));
+                                     createjs.Tween.get(people[0].mesh.material.color).to({r:1,g:1,b:1}, 15000);}},                              
     // {time: 1.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500); createjs.Tween.get(things["wallmove.json"].model.rotation).to({y:8000},3000)}},
     // {time:1.50, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0}, 500)}},
     // {time:2.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500)}},
     // {time:2.50, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0}, 500)}},
     // {time:3.00, action: function(){createjs.Tween.get(things["wallmove.json"].model.material).to({opacity:0.2}, 500)}},
     
-    {time:  8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);
-rotateClones(things["bassbell.json"],0.06,500)}},
+    {time:  8.04, action: function(){scatter(things["DRUM3.json"],1,{x:0,y:0,z:0});morph("DRUM3.json", 1, 0.02);}},
     {time:  8.06, action: function(){morph("DRUM3.json", 0, 0.4);}},
     {time:  8.48, action: function(){randomPosition(things["DRUM3.json"], {x:10, y:10, z:10});morph("DRUM3.json", 1, 0.02);}},
     {time:  8.50, action: function(){morph("DRUM3.json", 0, 0.18);}},
@@ -425,26 +444,191 @@ rotateClones(things["bassbell.json"],0.06,500)}},
     
     {time: 42.43, action: function(){randomPosition(things["bassbell.json"], {x:0, y:3, z:0}, function(model){model.position.y -= 2}); }},
     {time: 42.72, action: function(){createjs.Tween.get(things["rings.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
-    createjs.Tween.get(things["bassbell.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
-    createjs.Tween.get(things["DRUM3.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
-    createjs.Tween.get(things["ripple2.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
-    createjs.Tween.get(things["moonground.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
-    createjs.Tween.get(things["groundsea.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
-    createjs.Tween.get(things["groundsea.json"].model.material).to({opacity:1},10);
-    createjs.Tween.get(things["wall.json"].model.material).to({opacity:1},10);
-    createjs.Tween.get(things["wall.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
-    var thing = things["DRUM3.json"]; 
+        createjs.Tween.get(things["bassbell.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+        createjs.Tween.get(things["DRUM3.json"].model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
+        createjs.Tween.get(things["ripple2.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
+        createjs.Tween.get(things["moonground.json"].model.position).to({y:-8},300, createjs.Ease.getPowIn(3));
+        createjs.Tween.get(things["groundsea.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
+        createjs.Tween.get(things["pond.json"].model.position).to({y:-8},300);
+        createjs.Tween.get(things["groundsea.json"].model.material).to({opacity:1},10);
+        createjs.Tween.get(things["wall.json"].model.material).to({opacity:1},10);
+        createjs.Tween.get(things["wall.json"].model.position).to({y:0},1000, createjs.Ease.getPowOut(3));
+        scramble(things["groundsea.json"],{x:0,y:0.7,z:0},3000,24800);
+        createjs.Tween.get(things["groundsea.json"].attributes).to({tweenSpeed:1},24800, createjs.Ease.getPowIn(1));
+         var thing = things["DRUM3.json"]; 
         for(var i = 0; i < thing.clones.length; i++){
             var clone = thing.clones[i];
             createjs.Tween.get(clone.model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
-        };
-    thing = things["bassbell.json"];
+            };
+        thing = things["bassbell.json"];
         for(var i = 0; i < thing.clones.length; i++){
             var clone = thing.clones[i];
             createjs.Tween.get(clone.model.position).to({y:-8}, 300, createjs.Ease.getPowIn(3));
-        };
+            };
+        
+    }},
+    
 
-    }}
+    {time: 43.20, action: function(){
+    randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 43.48, action: function(){
+    randomPosition(things["2bassv2.json"], {x:6, z:6});
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 43.60, action: function(){
+    randomPosition(things["2bassv3.json"], {x:6, z:6});
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+        {time: 44.04, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+    {time: 44.72, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 44.92, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 45.20, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+    {time: 45.40, action: function(){
+        randomPosition(things["2bassv4.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-2.9},01);}},
+    {time: 45.80, action: function(){createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 46.68, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 46.88, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 47.12, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 47.56, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 48.24, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 48.48, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 48.68, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 49.32, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 50.00, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 50.20, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+{time: 51.04, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 51.92, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 52.16, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 52.36, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+    {time: 52.52, action: function(){
+        randomPosition(things["2bassv4.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-2.9},01);}},
+{time: 53.12, action: function(){createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 460, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 460, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 460, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 53.64, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 53.84, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 54.08, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 54.58, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 55.36, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+{time: 56.28, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 57.08, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 57.32, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 57.52, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 58.00, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 58.84, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 59.08, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 59.28, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 59.68, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+    
+    {time: 60.16, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 60.48, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 60.60, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+    {time: 60.80, action: function(){
+        randomPosition(things["2bassv4.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-2.9},01);}},
+{time: 61.48, action: function(){createjs.Tween.get(things["2bassv4.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+ 
+    {time: 62.32, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 62.56, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+    {time: 62.76, action: function(){
+        randomPosition(things["2bassv3.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-2.9},60);}},
+{time: 63.20, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+    
+    {time: 64.08, action: function(){
+        randomPosition(things["2bass.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bass.json"].model.position).to({y:-2.9},60);}},
+    {time: 64.28, action: function(){
+        randomPosition(things["2bassv2.json"], {x:3, z:3}); 
+    createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-2.9},60);}},
+{time: 64.88, action: function(){createjs.Tween.get(things["2bass.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv2.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3)); createjs.Tween.get(things["2bassv3.json"].model.position).to({y:-9}, 660, createjs.Ease.getPowIn(3));}},
+
+
+    {time: 65.56, action: function(){
+    scatter(things["2bass.json"],5,{x:0,y:0,z:0});
+     var thing = things["2bass.json"]; 
+        for(var i = 0; i < thing.clones.length; i++){
+             var clone = thing.clones[i];
+                randomPosition(clone, {x:2, z:2});
+             createjs.Tween.get(clone.model.position).to({y:(Math.random()*-3-2.5)}, 60);
+             };
+        }}
 
 
 ];
