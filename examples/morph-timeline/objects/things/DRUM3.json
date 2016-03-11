@@ -35,6 +35,7 @@
         "depthWrite": true,
         "specularCoef": 50,
         "colorAmbient": [0.8,0.8,0.8],
+        "doubleSided": true,
         "shading": "basic"
     }],
     "uvs": [],

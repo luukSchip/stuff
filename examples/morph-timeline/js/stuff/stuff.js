@@ -10,7 +10,7 @@ var audioFilenames = ['3 of 4.mp3'];
 var eventFilenames = ['events-drum.js'];
 var modelFilenames = ['scramble.dae'];
 
-var ffwdTime = 40;
+var ffwdTime = 0;
 
 var animationCallbacks = {};
 var yRotationFactor = 1;
