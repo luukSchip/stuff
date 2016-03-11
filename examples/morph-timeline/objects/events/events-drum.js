@@ -115,7 +115,9 @@ things["2bassv2.json"].model.rotation.y=Math.PI*Math.random();
 things["2bass.json"].model.rotation.y=Math.PI*Math.random();
 
 //underneath: tijdelijke deletes
-people[0].mesh.visible=false;
+
+//people[0].mesh.visible=false;
+
 
 
 
