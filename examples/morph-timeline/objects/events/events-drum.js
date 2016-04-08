@@ -149,19 +149,20 @@ var timeEvents = [
      {time: 0.00, action: function(){createjs.Tween.get(people[0].mesh.position).to({z:-300}, 15000, createjs.Ease.getPowOut(3));
                                      createjs.Tween.get(people[0].mesh.material.color).to({r:1,g:1,b:1}, 15000);}},                              
    
-{time:1.00, action: function(){
+    {time:1.00, action: function(){
         repeat(2, 100, function(){        
-        morph("DRUM3.json", 0, 0);
-        scatter(things["DRUM3.json"],2,{x:5,y:5,z:5}); 
-        randomPosition(things["DRUM3.json"], {x:10, y:0, z:10});
-        morph("DRUM3.json",1, 0);
-        var thing = things["DRUM3.json"];
-        var cloneLength = thing.clones.length;
-        for(var i = 0; i < thing.clones.length; i++){thing.clones[i].model.position.y=5.3;};
-    
-    
-    });
-    
+            morph("DRUM3.json", 0, 0);
+            scatter(things["DRUM3.json"],2,{x:5,y:5,z:5}); 
+            randomPosition(things["DRUM3.json"], {x:10, y:0, z:10});
+            morph("DRUM3.json",1, 0);
+            var thing = things["DRUM3.json"];
+            var cloneLength = thing.clones.length;
+            for(var i = 0; i < thing.clones.length; i++){
+                thing.clones[i].model.position.y=5.3;
+            };
+            //console.log("repeat");
+        });
+    }}, 
       
 
 
